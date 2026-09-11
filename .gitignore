@@ -1,0 +1,21 @@
+# Environnement virtuel Python
+venv/
+.venv/
+
+# Variables d'environnement et secrets
+.env
+
+# Fichiers générés par Python
+__pycache__/
+*.py[cod]
+
+# Cache des outils de test
+.pytest_cache/
+
+# Fichiers des éditeurs
+.vscode/
+.idea/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
