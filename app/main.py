@@ -1,24 +1,19 @@
 from fastapi import FastAPI
 
-# Création de l'application FastAPI principale
+# Importe les routes définies dans le dossier api.
+from app.api.routes import router
+
+# Importe la configuration générale de l'application.
+from app.core.config import settings
+
+
+# Création de l'application FastAPI.
 app = FastAPI(
-    title="AdmiGuide AI",
-    description="Microservice IA chargé de l'orientation administrative.",
-    version="1.0.0",
+    title=settings.app_name,
+    description="Service intelligent d'orientation administrative d'AdmiGuide.",
+    version=settings.app_version,
 )
 
 
-# Route simple permettant de vérifier que l'API fonctionne
-@app.get("/")
-def root():
-    return {
-        "message": "AdmiGuide AI fonctionne correctement."
-    }
-
-
-# Route permettant de vérifier l'état du microservice
-@app.get("/health")
-def health_check():
-    return {
-        "status": "ok"
-    }
+# Ajoute les routes définies dans routes.py à l'application.
+app.include_router(router)
