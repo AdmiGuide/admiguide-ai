@@ -10,6 +10,8 @@ from app.core.config import settings
 # Service chargé de créer les embeddings.
 from app.services.embedding_service import get_embedding_service
 
+# Structure utilisée pour valider les documents avant leur indexation.
+from app.schemas.document import AdministrativeDocument
 
 # Service chargé du stockage et de la recherche vectorielle.
 class VectorStoreService:
@@ -28,18 +30,30 @@ class VectorStoreService:
             metadata={"hnsw:space": "cosine"},
         )
 
-    # Ajoute ou met à jour un contenu administratif dans ChromaDB.
+        # Ajoute ou met à jour un document administratif dans ChromaDB.
     def upsert_document(
         self,
-        document_id: str,
-        texte: str,
-        metadata: dict[str, str | int | float | bool],
+        document: AdministrativeDocument,
     ) -> None:
-        vecteur = self.embedding_service.encode_passage(texte)
+        # Transforme le contenu administratif en vecteur.
+        vecteur = self.embedding_service.encode_passage(
+            document.texte
+        )
 
+        # Informations permettant d'identifier la démarche et la source.
+        metadata = {
+            "demarche_code": document.demarche_code,
+            "pays_application": document.pays_application,
+            "juridiction": document.juridiction,
+            "source_titre": document.source_titre,
+            "source_url": document.source_url,
+            "source_type": document.source_type,
+        }
+
+        # Enregistre le texte, son vecteur et ses métadonnées.
         self.collection.upsert(
-            ids=[document_id],
-            documents=[texte],
+            ids=[document.document_id],
+            documents=[document.texte],
             embeddings=[vecteur],
             metadatas=[metadata],
         )
@@ -54,6 +68,11 @@ class VectorStoreService:
             include=["documents", "metadatas", "distances"],
         )
 
+    # Supprime un document de ChromaDB à partir de son identifiant.
+    def delete_document(self, document_id: str) -> None:
+        self.collection.delete(
+            ids=[document_id]
+        )
 
 # Évite de recréer le client ChromaDB à chaque appel.
 @lru_cache
