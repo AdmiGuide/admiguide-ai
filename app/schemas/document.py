@@ -22,6 +22,9 @@ class AdministrativeDocument(BaseModel):
     # Administration ou juridiction concernée.
     juridiction: str
 
+    # Identifiant stable de la source dont provient ce morceau.
+    source_id: str
+
     # Titre de la source officielle.
     source_titre: str
 

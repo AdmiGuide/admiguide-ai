@@ -42,6 +42,7 @@ class VectorStoreService:
 
         # Informations permettant d'identifier la démarche et la source.
         metadata = {
+            "source_id": document.source_id,
             "demarche_code": document.demarche_code,
             "pays_application": document.pays_application,
             "juridiction": document.juridiction,
@@ -58,6 +59,54 @@ class VectorStoreService:
             metadatas=[metadata],
         )
 
+    # Ajoute ou met à jour plusieurs documents en une seule opération.
+    def upsert_documents(
+        self,
+        documents: list[AdministrativeDocument],
+    ) -> None:
+        # Ne fait rien si la liste est vide.
+        if not documents:
+            return
+
+        # Crée tous les embeddings avant de modifier ChromaDB.
+        vecteurs = [
+            self.embedding_service.encode_passage(document.texte)
+            for document in documents
+        ]
+
+        # Prépare les métadonnées de chaque document.
+        metadatas = [
+            {
+                "source_id": document.source_id,
+                "demarche_code": document.demarche_code,
+                "pays_application": document.pays_application,
+                "juridiction": document.juridiction,
+                "source_titre": document.source_titre,
+                "source_url": document.source_url,
+                "source_type": document.source_type,
+            }
+            for document in documents
+        ]
+
+        # Enregistre tous les documents dans ChromaDB.
+        self.collection.upsert(
+            ids=[document.document_id for document in documents],
+            documents=[document.texte for document in documents],
+            embeddings=vecteurs,
+            metadatas=metadatas,
+        )
+
+    # Retourne les identifiants des chunks déjà enregistrés pour une source.
+    def get_source_document_ids(
+        self,
+        source_id: str,
+    ) -> list[str]:
+        resultat = self.collection.get(
+            where={"source_id": source_id}
+        )
+
+        return resultat["ids"]
+
     # Recherche les contenus les plus proches de la demande utilisateur.
     def search(self, texte: str, limit: int = 3) -> dict:
         vecteur = self.embedding_service.encode_query(texte)
@@ -68,10 +117,26 @@ class VectorStoreService:
             include=["documents", "metadatas", "distances"],
         )
 
+    # Supprime plusieurs documents à partir de leurs identifiants.
+    def delete_documents(
+        self,
+        document_ids: list[str],
+    ) -> None:
+        if document_ids:
+            self.collection.delete(
+                ids=document_ids
+            )
+
     # Supprime un document de ChromaDB à partir de son identifiant.
     def delete_document(self, document_id: str) -> None:
         self.collection.delete(
             ids=[document_id]
+        )
+
+    # Supprime tous les morceaux appartenant à une même source.
+    def delete_source(self, source_id: str) -> None:
+        self.collection.delete(
+            where={"source_id": source_id}
         )
 
 # Évite de recréer le client ChromaDB à chaque appel.

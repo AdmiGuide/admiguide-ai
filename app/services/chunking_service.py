@@ -43,8 +43,12 @@ def chunk_text(
             else:
                 chunk_actuel = candidat
 
-    # Ajoute le dernier morceau restant.
+    # Ajoute le dernier morceau restant après avoir traité tout le texte.
     if chunk_actuel:
-        chunks.append(chunk_actuel)
+        # Évite de conserver un dernier chunk trop court isolé.
+        if len(chunk_actuel) < 50 and chunks:
+            chunks[-1] = f"{chunks[-1]} {chunk_actuel}"
+        else:
+            chunks.append(chunk_actuel)
 
     return chunks
