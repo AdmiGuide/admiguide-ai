@@ -24,8 +24,8 @@ class ReponseComplementaireInput(BaseModel):
 class OrientationRequest(BaseModel):
     situation: str = Field(
         ...,
-        min_length=20,
-        max_length=2000,
+        min_length=15,
+        max_length=1500,
         description="Situation administrative décrite par l'utilisateur.",
     )
 

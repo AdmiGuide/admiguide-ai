@@ -19,3 +19,6 @@ __pycache__/
 # Fichiers système
 .DS_Store
 Thumbs.db
+
+# Base vectorielle locale générée par ChromaDB
+data/chroma/
