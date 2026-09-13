@@ -22,6 +22,14 @@ class Settings(BaseSettings):
             extra="ignore",
         )
 
+    # Clé privée utilisée pour appeler OpenRouter.
+    openrouter_api_key: str = ""
 
+    # Modèle génératif utilisé par AdmiGuide.
+    llm_model_name: str = ""
+
+    # Adresse de base de l'API OpenRouter.
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    
 # Instance utilisée dans toute l'application.
 settings = Settings()
