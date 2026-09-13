@@ -25,5 +25,8 @@ class AdministrativeSource(BaseModel):
     # Type de source : page web, document, API, etc.
     source_type: str
 
+    # Pays dans lequel les informations de cette source s'appliquent.
+    pays_application: str
+
     # Date à laquelle la source a été vérifiée.
     date_verification: str

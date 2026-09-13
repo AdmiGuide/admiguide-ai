@@ -1,0 +1,141 @@
+=== SOURCE ===
+ID: PASSEPORT_SENEGAL_INTERIEUR
+TITRE: Passeport au Sénégal - Ministère de l'Intérieur et de la Sécurité publique
+URL: https://www.interieur.gouv.sn/services/services-aux-usagers/passeport-ordinaire
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-09-13
+PAYS_APPLICATION: Sénégal
+
+CONTENU:
+PASSEPORT - SÉNÉGAL
+
+Première demande
+
+Tout citoyen sénégalais peut demander un passeport ordinaire.
+
+Pour une demande au Sénégal, les pièces indiquées comprennent notamment :
+- l'original de la carte nationale d'identité ainsi qu'une copie certifiée conforme ;
+- trois photos d'identité en couleur ;
+- une quittance attestant du paiement des droits.
+
+Le coût indiqué par cette source est de 20 000 FCFA.
+
+Au Sénégal, la demande s'effectue auprès du commissariat de police dont relève le domicile du demandeur.
+
+Renouvellement
+
+Le renouvellement peut être effectué sur présentation de l'ancien passeport et d'une nouvelle quittance de paiement de 20 000 FCFA.
+
+Perte ou vol
+
+En cas de perte ou de vol, le demandeur doit effectuer une déclaration de perte puis refaire la procédure de demande de passeport.
+
+Aucun duplicata du passeport perdu n'est délivré.
+
+Pour les Sénégalais résidant à l'étranger, la source indique de s'adresser à la représentation sénégalaise compétente dans le pays de résidence.
+
+
+=== SOURCE ===
+ID: PASSEPORT_FRANCE_PARIS_PREMIERE_DEMANDE
+TITRE: Première demande de passeport - Consulat général du Sénégal à Paris
+URL: https://consulsen-paris.gouv.sn/demande-de-passeport/
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-09-13
+PAYS_APPLICATION: France
+
+CONTENU:
+PASSEPORT - FRANCE - CONSULAT DE PARIS
+
+Première demande
+
+Les pièces nécessaires varient notamment selon l'âge, le lieu de naissance et la situation du demandeur.
+
+Selon les cas, les documents demandés peuvent notamment comprendre :
+- une carte nationale d'identité biométrique CEDEAO ;
+- un extrait de naissance récent ;
+- un certificat de nationalité lorsque la situation l'exige ;
+- un justificatif de domicile ;
+- un timbre fiscal.
+
+Pour les mineurs, des documents supplémentaires liés à l'autorité parentale sont nécessaires.
+
+Le montant du timbre indiqué par cette source est de 30,5 euros.
+
+
+=== SOURCE ===
+ID: PASSEPORT_FRANCE_PARIS_RENOUVELLEMENT
+TITRE: Renouvellement de passeport - Consulat général du Sénégal à Paris
+URL: https://consulsen-paris.gouv.sn/renouvellement-de-passeport/
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-09-13
+PAYS_APPLICATION: France
+
+CONTENU:
+PASSEPORT - FRANCE - CONSULAT DE PARIS
+
+Renouvellement d'un passeport expiré
+
+Les documents indiqués comprennent notamment :
+- l'ancien passeport ;
+- une carte nationale d'identité CEDEAO ;
+- un justificatif de domicile dans le pays de résidence ;
+- un timbre fiscal de 30,5 euros.
+
+Perte du passeport
+
+En cas de perte, les documents indiqués comprennent notamment :
+- un certificat de perte délivré par la police ou la gendarmerie du pays de résidence ;
+- une carte nationale d'identité CEDEAO ;
+- un justificatif de domicile dans le pays de résidence ;
+- un timbre fiscal de 61 euros.
+
+Passeport détérioré
+
+Le renouvellement d'un passeport détérioré nécessite notamment :
+- l'ancien passeport détérioré ;
+- une carte nationale d'identité CEDEAO ;
+- un justificatif de domicile ;
+- un timbre fiscal de 61 euros.
+
+Pour un mineur, des documents supplémentaires relatifs à l'autorité parentale sont demandés.
+
+
+=== SOURCE ===
+ID: PASSEPORT_FRANCE_LYON_RENOUVELLEMENT
+TITRE: Renouvellement de passeport - Consulat général du Sénégal à Lyon
+URL: https://consulsen-lyon.gouv.sn/renouvellement-de-passeport/
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-09-13
+PAYS_APPLICATION: France
+
+CONTENU:
+PASSEPORT - FRANCE - CONSULAT DE LYON
+
+Renouvellement d'un passeport expiré
+
+Les documents indiqués comprennent notamment :
+- l'ancien passeport ;
+- une carte nationale d'identité CEDEAO ;
+- un extrait de naissance de moins de 12 mois ;
+- un justificatif de domicile dans le pays de résidence ;
+- un timbre fiscal de 30,5 euros.
+
+Perte du passeport
+
+En cas de perte, les documents indiqués comprennent notamment :
+- un certificat de perte délivré par la police ou la gendarmerie du pays de résidence ;
+- une carte nationale d'identité CEDEAO ;
+- un extrait de naissance de moins de 12 mois ;
+- un justificatif de domicile ;
+- un timbre fiscal de 61 euros.
+
+Passeport détérioré
+
+Les documents indiqués comprennent notamment :
+- le passeport détérioré ;
+- une carte nationale d'identité CEDEAO ;
+- un extrait de naissance de moins de 12 mois ;
+- un justificatif de domicile ;
+- un timbre fiscal de 61 euros.
+
+Pour les mineurs, des documents supplémentaires liés à l'autorité parentale sont demandés.

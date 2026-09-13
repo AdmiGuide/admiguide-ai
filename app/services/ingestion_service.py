@@ -46,6 +46,7 @@ class IngestionService:
                 source_url=source.source_url,
                 source_type=source.source_type,
                 date_verification=source.date_verification,
+                pays_application=source.pays_application,
             )
 
             documents.append(document)

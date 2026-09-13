@@ -35,9 +35,16 @@ class VectorStoreService:
         self,
         document: AdministrativeDocument,
     ) -> None:
-        # Transforme le contenu administratif en vecteur.
+        # Ajoute le contexte de la source au texte utilisé pour l'embedding.
+        texte_embedding = (
+            f"Domaine : {document.domaine}\n"
+            f"Source : {document.source_titre}\n"
+            f"{document.texte}"
+        )
+
+        # Transforme le contenu enrichi en vecteur.
         vecteur = self.embedding_service.encode_passage(
-            document.texte
+            texte_embedding
         )
 
         # Informations permettant d'identifier le contenu et sa source.
@@ -48,6 +55,7 @@ class VectorStoreService:
             "source_url": document.source_url,
             "source_type": document.source_type,
             "date_verification": document.date_verification,
+            "pays_application": document.pays_application,
         }
 
         # Enregistre le texte, son vecteur et ses métadonnées.
@@ -67,9 +75,13 @@ class VectorStoreService:
         if not documents:
             return
 
-        # Crée tous les embeddings avant de modifier ChromaDB.
+        # Ajoute le contexte de chaque source avant de créer les embeddings.
         vecteurs = [
-            self.embedding_service.encode_passage(document.texte)
+            self.embedding_service.encode_passage(
+                f"Domaine : {document.domaine}\n"
+                f"Source : {document.source_titre}\n"
+                f"{document.texte}"
+            )
             for document in documents
         ]
 
@@ -82,6 +94,7 @@ class VectorStoreService:
                 "source_url": document.source_url,
                 "source_type": document.source_type,
                 "date_verification": document.date_verification,
+                "pays_application": document.pays_application,
             }
             for document in documents
         ]
@@ -106,12 +119,26 @@ class VectorStoreService:
         return resultat["ids"]
 
     # Recherche les contenus les plus proches de la demande utilisateur.
-    def search(self, texte: str, limit: int = 3) -> dict:
+    def search(
+        self,
+        texte: str,
+        limit: int = 3,
+        pays_application: str | None = None,
+    ) -> dict:
+        # Transforme la demande utilisateur en vecteur.
         vecteur = self.embedding_service.encode_query(texte)
+
+        # Filtre par pays uniquement lorsqu'il est connu.
+        filtre = (
+            {"pays_application": pays_application}
+            if pays_application
+            else None
+        )
 
         return self.collection.query(
             query_embeddings=[vecteur],
             n_results=limit,
+            where=filtre,
             include=["documents", "metadatas", "distances"],
         )
 
