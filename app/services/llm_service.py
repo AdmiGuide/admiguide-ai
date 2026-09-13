@@ -33,6 +33,7 @@ class LLMService:
         # Données envoyées à OpenRouter.
         payload = {
             "model": settings.llm_model_name,
+            "temperature": 0,
             "messages": [
                 {
                     "role": "system",
@@ -67,15 +68,33 @@ class LLMService:
                 f"Erreur OpenRouter : HTTP {response.status_code}"
             )
 
+        # Transforme la réponse JSON d'OpenRouter en dictionnaire Python.
         data = response.json()
 
-        # Vérifie que la réponse possède la structure attendue.
+        # Vérifie si OpenRouter a retourné une erreur dans le JSON.
+        if "error" in data:
+            erreur = data["error"]
+
+            # Récupère le message lorsque celui-ci est disponible.
+            if isinstance(erreur, dict):
+                message = erreur.get(
+                    "message",
+                    "Erreur inconnue retournée par OpenRouter.",
+                )
+            else:
+                message = str(erreur)
+
+            raise RuntimeError(
+                f"Erreur OpenRouter : {message}"
+            )
+
+        # Vérifie que la réponse contient bien le texte généré.
         try:
             contenu = data["choices"][0]["message"]["content"]
-        except (KeyError, IndexError, TypeError):
+        except (KeyError, IndexError, TypeError) as exc:
             raise RuntimeError(
-                "La réponse reçue depuis OpenRouter est invalide."
-            )
+                "OpenRouter a retourné une réponse sans contenu généré."
+            ) from exc
 
         return contenu.strip()
 

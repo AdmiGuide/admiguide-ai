@@ -22,11 +22,27 @@ class ReponseComplementaireInput(BaseModel):
 
 # Données envoyées au service IA pour analyser une situation.
 class OrientationRequest(BaseModel):
+    """Données nécessaires pour analyser une situation administrative."""
+
+    # Situation décrite librement par l'utilisateur.
     situation: str = Field(
         ...,
-        min_length=15,
-        max_length=1500,
+        min_length=20,
+        max_length=2000,
         description="Situation administrative décrite par l'utilisateur.",
+    )
+
+    # Pays dans lequel la démarche doit être effectuée, s'il est connu.
+    pays_application: str | None = Field(
+        default=None,
+        min_length=2,
+        max_length=100,
+    )
+
+    # Codes de démarches que Django autorise pour cette analyse.
+    demarche_codes: list[str] = Field(
+        ...,
+        min_length=1,
     )
 
     # Réponses déjà fournies aux éventuelles questions complémentaires.
@@ -34,14 +50,12 @@ class OrientationRequest(BaseModel):
         default_factory=list
     )
 
-    # Supprime les espaces inutiles avant la validation de la longueur.
     @field_validator("situation", mode="before")
     @classmethod
     def nettoyer_situation(cls, valeur: str) -> str:
-        if isinstance(valeur, str):
-            return valeur.strip()
+        """Supprime les espaces inutiles autour de la situation."""
 
-        return valeur
+        return valeur.strip()
 
 
 

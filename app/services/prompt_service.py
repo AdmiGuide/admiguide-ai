@@ -20,6 +20,16 @@ RÈGLES OBLIGATOIRES :
   l'utilisateur et ses réponses complémentaires.
 - Le champ "resume" ne doit contenir aucune étape, pièce,
   institution, coût ou délai.
+- Lorsqu'une précision concerne directement un document,
+  pose la question sur ce document plutôt que sur une information
+  personnelle plus générale.
+- Ne suppose jamais la nationalité de l'utilisateur,
+  le pays émetteur d'un document ou son type exact.
+- Si une information est nécessaire pour confirmer qu'une source
+  s'applique à la situation et qu'elle n'est pas explicitement fournie,
+  retourne "PRECISIONS_REQUISES".
+- Ne considère pas le pays, les sources disponibles ou les codes
+  autorisés comme une preuve d'une information manquante.
 """.strip()
 
 
