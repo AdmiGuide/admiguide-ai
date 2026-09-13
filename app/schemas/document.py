@@ -2,34 +2,31 @@
 from pydantic import BaseModel, Field
 
 
-# Représente un contenu administratif prêt à être indexé dans ChromaDB.
+# Représente un morceau de contenu prêt à être indexé dans ChromaDB.
 class AdministrativeDocument(BaseModel):
-    # Identifiant unique du contenu dans ChromaDB.
+    # Identifiant unique du chunk dans ChromaDB.
     document_id: str
 
-    # Texte administratif utilisé pour la recherche sémantique.
+    # Identifiant de la source complète.
+    source_id: str
+
+    # Texte utilisé pour la recherche sémantique.
     texte: str = Field(
         ...,
         min_length=20,
     )
 
-    # Code stable de la démarche liée au document.
-    demarche_code: str
+    # Domaine administratif auquel appartient le contenu.
+    domaine: str
 
-    # Pays dans lequel l'information administrative s'applique.
-    pays_application: str
-
-    # Administration ou juridiction concernée.
-    juridiction: str
-
-    # Identifiant stable de la source dont provient ce morceau.
-    source_id: str
-
-    # Titre de la source officielle.
+    # Titre de la source.
     source_titre: str
 
-    # Adresse de la source officielle.
+    # Adresse officielle de la source.
     source_url: str
 
-    # Type de source : page web, document, API, etc.
+    # Type de source.
     source_type: str
+
+    # Date à laquelle la source a été vérifiée.
+    date_verification: str

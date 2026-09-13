@@ -41,12 +41,11 @@ class IngestionService:
                 document_id=f"{source.source_id}-chunk-{index}",
                 source_id=source.source_id,
                 texte=chunk,
-                demarche_code=source.demarche_code,
-                pays_application=source.pays_application,
-                juridiction=source.juridiction,
+                domaine=source.domaine,
                 source_titre=source.source_titre,
                 source_url=source.source_url,
                 source_type=source.source_type,
+                date_verification=source.date_verification,
             )
 
             documents.append(document)

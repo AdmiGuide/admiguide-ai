@@ -7,26 +7,23 @@ class AdministrativeSource(BaseModel):
     # Identifiant stable permettant de reconnaître la source.
     source_id: str
 
-    # Contenu textuel complet récupéré depuis la source officielle.
+    # Contenu textuel complet de la source.
     texte: str = Field(
         ...,
         min_length=20,
     )
 
-    # Code de la démarche concernée par cette source.
-    demarche_code: str
+    # Domaine administratif auquel appartient la source.
+    domaine: str
 
-    # Pays dans lequel l'information administrative s'applique.
-    pays_application: str
-
-    # Administration ou zone concernée par l'information.
-    juridiction: str
-
-    # Titre de la source officielle.
+    # Titre permettant d'identifier la source.
     source_titre: str
 
-    # Adresse de la source officielle.
+    # Adresse officielle de la source.
     source_url: str
 
     # Type de source : page web, document, API, etc.
     source_type: str
+
+    # Date à laquelle la source a été vérifiée.
+    date_verification: str

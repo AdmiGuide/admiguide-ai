@@ -40,15 +40,14 @@ class VectorStoreService:
             document.texte
         )
 
-        # Informations permettant d'identifier la démarche et la source.
+        # Informations permettant d'identifier le contenu et sa source.
         metadata = {
             "source_id": document.source_id,
-            "demarche_code": document.demarche_code,
-            "pays_application": document.pays_application,
-            "juridiction": document.juridiction,
+            "domaine": document.domaine,
             "source_titre": document.source_titre,
             "source_url": document.source_url,
             "source_type": document.source_type,
+            "date_verification": document.date_verification,
         }
 
         # Enregistre le texte, son vecteur et ses métadonnées.
@@ -78,12 +77,11 @@ class VectorStoreService:
         metadatas = [
             {
                 "source_id": document.source_id,
-                "demarche_code": document.demarche_code,
-                "pays_application": document.pays_application,
-                "juridiction": document.juridiction,
+                "domaine": document.domaine,
                 "source_titre": document.source_titre,
                 "source_url": document.source_url,
                 "source_type": document.source_type,
+                "date_verification": document.date_verification,
             }
             for document in documents
         ]
