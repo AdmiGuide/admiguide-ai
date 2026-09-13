@@ -58,6 +58,43 @@ class OrientationRequest(BaseModel):
         return valeur.strip()
 
 
+    @field_validator("pays_application", mode="before")
+    @classmethod
+    def normaliser_pays_application(
+        cls,
+        valeur: str | None,
+    ) -> str | None:
+        """Normalise le pays utilisé pour la recherche des sources."""
+
+        if valeur is None:
+            return None
+
+        valeur = valeur.strip().upper()
+
+        # Alias utiles pour le MVP et les tests manuels.
+        alias = {
+            "SÉNÉGAL": "SN",
+            "SENEGAL": "SN",
+            "FRANCE": "FR",
+            "ÉTRANGER": "ETRANGER",
+        }
+
+        valeur = alias.get(valeur, valeur)
+
+        # ETRANGER est réservé aux démarches consulaires générales.
+        if valeur == "ETRANGER":
+            return valeur
+
+        # Les autres pays utilisent un code à deux lettres.
+        if len(valeur) != 2 or not valeur.isalpha():
+            raise ValueError(
+                "Le pays doit utiliser un code à deux lettres "
+                "comme SN ou FR."
+            )
+
+        return valeur
+
+
 
 # Représente une question nécessaire pour mieux comprendre la situation.
 class QuestionComplementaireResponse(BaseModel):

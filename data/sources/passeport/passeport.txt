@@ -4,7 +4,7 @@ TITRE: Passeport au Sénégal - Ministère de l'Intérieur et de la Sécurité p
 URL: https://www.interieur.gouv.sn/services/services-aux-usagers/passeport-ordinaire
 TYPE: PAGE_WEB
 DATE_VERIFICATION: 2026-09-13
-PAYS_APPLICATION: Sénégal
+PAYS_APPLICATION: SN
 
 CONTENU:
 PASSEPORT - SÉNÉGAL
@@ -41,7 +41,7 @@ TITRE: Première demande de passeport - Consulat général du Sénégal à Paris
 URL: https://consulsen-paris.gouv.sn/demande-de-passeport/
 TYPE: PAGE_WEB
 DATE_VERIFICATION: 2026-09-13
-PAYS_APPLICATION: France
+PAYS_APPLICATION: FR
 
 CONTENU:
 PASSEPORT - FRANCE - CONSULAT DE PARIS
@@ -68,7 +68,7 @@ TITRE: Renouvellement de passeport - Consulat général du Sénégal à Paris
 URL: https://consulsen-paris.gouv.sn/renouvellement-de-passeport/
 TYPE: PAGE_WEB
 DATE_VERIFICATION: 2026-09-13
-PAYS_APPLICATION: France
+PAYS_APPLICATION: FR
 
 CONTENU:
 PASSEPORT - FRANCE - CONSULAT DE PARIS
@@ -106,7 +106,7 @@ TITRE: Renouvellement de passeport - Consulat général du Sénégal à Lyon
 URL: https://consulsen-lyon.gouv.sn/renouvellement-de-passeport/
 TYPE: PAGE_WEB
 DATE_VERIFICATION: 2026-09-13
-PAYS_APPLICATION: France
+PAYS_APPLICATION: FR
 
 CONTENU:
 PASSEPORT - FRANCE - CONSULAT DE LYON

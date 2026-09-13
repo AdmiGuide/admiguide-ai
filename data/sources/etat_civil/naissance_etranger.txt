@@ -1,0 +1,32 @@
+=== SOURCE ===
+ID: NAISSANCE_ETRANGER_TRANSCRIPTION_01
+TITRE: Transcription d'un acte de naissance établi à l'étranger
+URL: https://dgse.gouv.sn/content/transcription-d%E2%80%99un-acte-d%E2%80%99%C3%A9tat-civil
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-09-13
+PAYS_APPLICATION: ETRANGER
+
+CONTENU:
+Démarche :
+Demander la transcription d'un acte de naissance établi à l'étranger au profit d'un ressortissant sénégalais.
+
+Principe :
+La transcription est une formalité administrative par laquelle un acte d'état civil dressé par une autorité étrangère au profit d'un ressortissant sénégalais est reproduit intégralement sur les registres tenus dans les postes diplomatiques et consulaires du Sénégal.
+
+Documents à fournir :
+- Deux copies intégrales originales de l'acte de naissance datant de moins de trois mois pour chaque enfant né dans le pays d'accueil d'une même famille.
+- Une pièce d'identité sénégalaise en cours de validité du père ou de la mère : Carte nationale d'identité ou passeport.
+- Le livret de famille sur lequel les enfants sont inscrits.
+
+Document délivré :
+Un extrait d'acte de naissance.
+
+Retrait du document :
+- Pour un enfant mineur, l'acte est remis exclusivement au père ou à la mère.
+- Pour une personne ayant atteint la majorité, elle doit se présenter avec une pièce d'identité en cours de validité pour retirer son acte de naissance.
+
+Service compétent :
+Les postes diplomatiques et consulaires du Sénégal.
+
+Limites :
+Cette démarche concerne la transcription d'un acte de naissance déjà établi par une autorité étrangère.

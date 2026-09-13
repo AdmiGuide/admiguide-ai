@@ -1,0 +1,62 @@
+=== SOURCE ===
+ID: DECES_FONCTIONNAIRE_ACTIVITE_01
+TITRE: Réversion de la pension et capital-décès pour un fonctionnaire décédé en activité
+URL: https://budget.sec.gouv.sn/consulter-l-article/demander-la-reversion-de-la-pension-et-le-capital-deces-pour-un-fonctionnaire-decede-en-activite
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-09-13
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Demander la liquidation et la réversion de la pension ainsi que le paiement du capital-décès après le décès d'un fonctionnaire en activité.
+
+Principe :
+Lorsqu'un fonctionnaire en activité décède, ses ayants-cause peuvent demander la liquidation et la réversion de ses droits à pension ainsi que le paiement du capital-décès auprès de la Direction des Pensions.
+
+Personnes pouvant effectuer la démarche :
+- Les ayants-cause du défunt.
+- Toute personne dûment mandatée par eux.
+
+Documents à fournir :
+- Une demande de liquidation de pension sur imprimé disponible au bureau d'accueil et d'information.
+- Une demande manuscrite pour le capital-décès.
+- Un acte de naissance ou une photocopie légalisée de la carte nationale d'identité du ou des conjoints survivants.
+- Un acte de mariage.
+- Un acte de décès.
+- Un acte de non-remariage lorsque la condition indiquée par l'administration s'applique, ainsi qu'un acte de non-séparation de corps.
+- Un jugement d'hérédité.
+- Un certificat de non-opposition ni appel.
+- Les actes de naissance des enfants mineurs et majeurs.
+- Un certificat de vie collectif des enfants.
+- Un acte de tutelle si la mère n'est pas tutrice.
+- Une photocopie légalisée de la carte d'identité du tuteur.
+- L'état signalétique des services militaires, s'il y a lieu.
+- Le matricule de pension militaire pour les titulaires d'une pension militaire.
+- Les justificatifs de validation des services auxiliaires, lorsque cela s'applique :
+  - l'autorisation de validation ;
+  - l'état des sommes dues ;
+  - la quittance de versement ou le certificat administratif.
+- L'acte de radiation.
+- Le relevé général des services.
+- Le certificat de cessation de paiement du fonctionnaire.
+
+Coût :
+Gratuit.
+
+Documents délivrés :
+- Une décision portant concession de pension après circuit de visa.
+- Une carte de pension après prise en charge du dossier.
+- Une décision accordant le capital-décès après circuit des visas.
+
+Délai :
+La source indique un délai de trois mois pour les décisions.
+
+Service compétent :
+La Direction des Pensions.
+
+En cas de perte de la carte de pension :
+Le bénéficiaire doit se rapprocher de la Direction des Pensions.
+
+Limites :
+Cette démarche concerne le cas d'un fonctionnaire décédé alors qu'il était encore en activité.
+La situation d'un fonctionnaire déjà retraité au moment du décès peut relever d'une autre procédure.

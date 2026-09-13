@@ -1,0 +1,29 @@
+=== SOURCE ===
+ID: RETOUR_DEFINITIF_CERTIFICAT_DEMENAGEMENT_01
+TITRE: Certificat de déménagement pour un retour définitif au Sénégal
+URL: https://dgse.gouv.sn/content/certificat-de-d%C3%A9m%C3%A9nagement
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-09-13
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Demander un certificat de déménagement dans le cadre d'un retour définitif au Sénégal.
+
+Principe :
+Le certificat de déménagement permet à un ressortissant sénégalais vivant à l'étranger et souhaitant rentrer définitivement au Sénégal de revenir avec ses biens mobiliers et de bénéficier d'une exonération de taxes sur certains biens conformément à la loi.
+
+Condition préalable :
+Le demandeur doit obligatoirement disposer d'une carte consulaire.
+
+Documents à fournir :
+- La liste des bagages à déménager en deux exemplaires.
+- La carte consulaire originale datant de plus de six mois à compter de sa date d'établissement.
+- Le billet ou la réservation pour le retour définitif au Sénégal.
+
+Document délivré :
+Un certificat de déménagement.
+
+Limites :
+La source indique que l'exonération concerne certains biens.
+Elle ne précise pas dans cette page la liste complète des biens exonérés ni les éventuelles exclusions.

@@ -128,12 +128,31 @@ class VectorStoreService:
         # Transforme la demande utilisateur en vecteur.
         vecteur = self.embedding_service.encode_query(texte)
 
-        # Filtre par pays uniquement lorsqu'il est connu.
-        filtre = (
-            {"pays_application": pays_application}
-            if pays_application
-            else None
-        )
+        # Prépare le filtre géographique des sources.
+        filtre = None
+
+        if pays_application:
+            if pays_application == "SN":
+                # Une démarche effectuée au Sénégal utilise les sources sénégalaises.
+                filtre = {
+                    "pays_application": "SN"
+                }
+
+            elif pays_application == "ETRANGER":
+                # Recherche explicitement les sources applicables à l'étranger.
+                filtre = {
+                    "pays_application": "ETRANGER"
+                }
+
+            else:
+                # À l'étranger, accepte une source propre au pays
+                # ou une source consulaire valable à l'étranger en général.
+                filtre = {
+                    "$or": [
+                        {"pays_application": pays_application},
+                        {"pays_application": "ETRANGER"},
+                    ]
+                }
 
         return self.collection.query(
             query_embeddings=[vecteur],
