@@ -67,37 +67,57 @@ ID: PASSEPORT_FRANCE_PARIS_RENOUVELLEMENT
 TITRE: Renouvellement de passeport - Consulat général du Sénégal à Paris
 URL: https://consulsen-paris.gouv.sn/renouvellement-de-passeport/
 TYPE: PAGE_WEB
-DATE_VERIFICATION: 2026-09-13
+DATE_VERIFICATION: 2026-09-16
 PAYS_APPLICATION: FR
 
 CONTENU:
 PASSEPORT - FRANCE - CONSULAT DE PARIS
 
-Renouvellement d'un passeport expiré
+Renouvellement de passeport
 
-Les documents indiqués comprennent notamment :
-- l'ancien passeport ;
-- une carte nationale d'identité CEDEAO ;
+Le renouvellement d'un passeport biométrique sénégalais est notamment possible dans les cas suivants :
+- expiration de la validité du passeport ;
+- pages réservées aux visas ou tampons remplies ;
+- changement d'état civil ;
+- détérioration ou perte du passeport.
+
+La source recommande d'entamer les démarches de renouvellement six mois avant l'expiration du passeport.
+
+Passeport expiré
+
+Les documents indiqués comprennent :
+- l'original du passeport et une copie de la page contenant les données personnelles ;
+- une carte nationale d'identité numérisée CEDEAO, avec l'original et une copie recto-verso ;
 - un justificatif de domicile dans le pays de résidence ;
 - un timbre fiscal de 30,5 euros.
 
-Perte du passeport
+Passeport perdu
 
-En cas de perte, les documents indiqués comprennent notamment :
-- un certificat de perte délivré par la police ou la gendarmerie du pays de résidence ;
-- une carte nationale d'identité CEDEAO ;
+En cas de perte du passeport, les documents indiqués comprennent :
+- un certificat de perte délivré par un commissariat de police ou une brigade de gendarmerie du pays de résidence ;
+- une CNI CEDEAO, avec l'original et une copie recto-verso ;
 - un justificatif de domicile dans le pays de résidence ;
 - un timbre fiscal de 61 euros.
 
 Passeport détérioré
 
-Le renouvellement d'un passeport détérioré nécessite notamment :
-- l'ancien passeport détérioré ;
-- une carte nationale d'identité CEDEAO ;
-- un justificatif de domicile ;
+Les documents indiqués comprennent :
+- l'original du passeport détérioré et une copie de la page contenant les données personnelles ;
+- une CNI numérisée CEDEAO, avec l'original et une copie recto-verso ;
+- un justificatif de domicile dans le pays de résidence ;
 - un timbre fiscal de 61 euros.
 
-Pour un mineur, des documents supplémentaires relatifs à l'autorité parentale sont demandés.
+Mineurs
+
+Pour les enfants mineurs, la demande de renouvellement doit être accompagnée :
+- d'une autorisation parentale signée par le détenteur de l'autorité parentale ;
+- de la légalisation de cette autorisation au niveau du Consulat ;
+- d'une copie recto-verso de la pièce d'identité sénégalaise du signataire.
+
+Prise de rendez-vous
+
+La prise de rendez-vous est proposée par le Consulat sur :
+https://paris.consulat.sn/
 
 
 === SOURCE ===
