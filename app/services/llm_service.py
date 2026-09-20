@@ -64,6 +64,12 @@ class LLMService:
 
         # Ne masque pas une erreur provenant du fournisseur.
         if response.status_code >= 400:
+            print(
+                "Erreur OpenRouter :",
+                response.status_code,
+                response.text[:1000],
+            )
+
             raise RuntimeError(
                 f"Erreur OpenRouter : HTTP {response.status_code}"
             )
