@@ -1,0 +1,18 @@
+# Variables sensibles.
+.env
+
+# Git.
+.git
+.gitignore
+
+# Environnements virtuels.
+venv/
+.venv/
+
+# Fichiers générés par Python.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Base ChromaDB locale.
+data/chroma/
