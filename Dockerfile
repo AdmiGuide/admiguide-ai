@@ -4,9 +4,23 @@ FROM python:3.12-slim
 # Dossier de travail de l'application.
 WORKDIR /app
 
-# Installe les dépendances Python.
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Installe PyTorch en version CPU uniquement.
+RUN pip install \
+    --no-cache-dir \
+    --timeout 120 \
+    --retries 5 \
+    torch==2.14.0+cpu \
+    --index-url https://download.pytorch.org/whl/cpu
+
+# Copie les dépendances nécessaires à Docker.
+COPY requirements-docker.txt .
+
+# Installe les dépendances du microservice IA.
+RUN pip install \
+    --no-cache-dir \
+    --timeout 120 \
+    --retries 5 \
+    -r requirements-docker.txt
 
 # Copie le microservice dans le conteneur.
 COPY . .

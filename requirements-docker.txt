@@ -1,0 +1,15 @@
+# API FastAPI.
+fastapi==0.141.1
+uvicorn==0.52.4
+
+# Validation et configuration.
+pydantic==2.13.5
+pydantic-settings==2.15.0
+python-dotenv==1.2.3
+
+# Appels au modèle de langage.
+httpx==0.28.1
+
+# RAG, embeddings et base vectorielle.
+sentence-transformers==6.0.1
+chromadb==1.5.9
