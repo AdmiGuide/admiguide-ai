@@ -123,7 +123,7 @@ data/sources/
 Pour les indexer dans la base vectorielle :
 
 ```bash
-python scripts/ingest_sources.py
+python -m scripts.ingest_sources
 ```
 
 Le script détecte automatiquement les fichiers `.txt` présents dans les sous-dossiers et les ajoute à ChromaDB.
