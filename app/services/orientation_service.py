@@ -24,6 +24,7 @@ class OrientationService:
         situation: str,
         pays_application: str | None,
         demarche_codes: list[str],
+        pays_residence: str | None = None,
         reponses: list[dict] | None = None,
     ):
         """Analyse une situation et retourne un résultat métier validé."""
@@ -41,6 +42,7 @@ class OrientationService:
             situation=situation,
             contexte=contexte,
             demarche_codes=demarche_codes,
+            pays_residence=pays_residence,
             reponses=reponses,
         )
 

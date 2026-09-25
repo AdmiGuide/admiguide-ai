@@ -39,6 +39,13 @@ class OrientationRequest(BaseModel):
         max_length=100,
     )
 
+    # Pays de résidence déjà renseigné dans AdmiGuide.
+    pays_residence: str | None = Field(
+        default=None,
+        min_length=2,
+        max_length=100,
+    )
+
     # Codes de démarches que Django autorise pour cette analyse.
     demarche_codes: list[str] = Field(
         ...,

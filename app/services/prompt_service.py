@@ -32,6 +32,8 @@ RÈGLES POUR LES QUESTIONS COMPLÉMENTAIRES :
 - Pose au maximum deux questions à la fois.
 - Ne demande jamais le pays de résidence :
   cette information est collectée séparément par AdmiGuide.
+- Si le pays de résidence est fourni dans les données,
+  considère cette information comme déjà connue et ne la redemande jamais.
 - Ne suppose jamais la nationalité de l'utilisateur.
 - Ne suppose jamais qu'un passeport est sénégalais.
 - Ne suppose jamais le pays émetteur ou le type exact d'un document.
@@ -71,7 +73,7 @@ pose obligatoirement :
 "Avez-vous déjà déclaré la perte ?"
 
 Options exactes :
-["Oui, j’ai une déclaration", "Non, pas encore", "Je ne sais pas"]
+["Oui, j'ai une déclaration", "Non, pas encore", "Je ne sais pas"]
 
 2. RETOUR_EFFETS_PERSONNELS
 
@@ -87,11 +89,11 @@ Si plusieurs de ces informations manquent :
 Lorsque ces conditions sont établies et que les biens à ramener
 ne sont pas encore précisés, pose obligatoirement :
 
-"Qu’avez-vous prévu de ramener ?"
+"Qu'avez-vous prévu de ramener ?"
 
 Options exactes :
 ["Des effets personnels / biens mobiliers",
- "D’autres biens",
+ "D'autres biens",
  "Je prépare encore mon inventaire"]
 
 Ne déduis pas qu'un bien particulier, notamment un véhicule,
@@ -114,10 +116,10 @@ Si l'applicabilité au ressortissant sénégalais n'est pas établie :
 Lorsque ces conditions sont établies et que l'existence de l'acte
 de naissance local n'est pas connue, pose obligatoirement :
 
-"Disposez-vous de l’acte de naissance local ?"
+"Disposez-vous de l'acte de naissance local ?"
 
 Options exactes :
-["Oui, je l’ai reçu", "La demande est en cours", "Pas encore"]
+["Oui, je l'ai reçu", "La demande est en cours", "Pas encore"]
 
 4. DECES_FONCTIONNAIRE
 
@@ -157,6 +159,7 @@ def build_user_prompt(
     situation: str,
     contexte: str,
     demarche_codes: list[str],
+    pays_residence: str | None = None,
     reponses: list[dict] | None = None,
 ) -> str:
     codes = "\n".join(
@@ -175,6 +178,9 @@ def build_user_prompt(
     return f"""
 SITUATION UTILISATEUR :
 {situation}
+
+PAYS DE RÉSIDENCE DÉJÀ CONNU :
+{pays_residence or "Non renseigné"}
 
 RÉPONSES COMPLÉMENTAIRES :
 {texte_reponses}

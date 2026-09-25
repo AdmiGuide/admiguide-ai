@@ -59,6 +59,7 @@ async def analyze(request: OrientationRequest):
             situation=request.situation,
             pays_application=request.pays_application,
             demarche_codes=request.demarche_codes,
+            pays_residence=request.pays_residence,
             reponses=reponses,
         )
 
