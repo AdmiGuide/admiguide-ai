@@ -1,7 +1,7 @@
 # Permet de réutiliser la même instance du service.
 from functools import lru_cache
 
-# Client HTTP asynchrone utilisé pour contacter OpenRouter.
+# Client HTTP asynchrone utilisé pour contacter Groq.
 import httpx
 
 # Configuration centralisée de l'application.
@@ -12,12 +12,13 @@ class LLMService:
     """Service chargé de communiquer avec le modèle génératif."""
 
     def __init__(self):
-        # Vérifie que la configuration indispensable est présente.
-        if not settings.openrouter_api_key:
+        # Vérifie que la clé Groq est présente.
+        if not settings.groq_api_key:
             raise ValueError(
-                "OPENROUTER_API_KEY est manquante dans le fichier .env."
+                "GROQ_API_KEY est manquante dans le fichier .env."
             )
 
+        # Vérifie que le modèle est configuré.
         if not settings.llm_model_name:
             raise ValueError(
                 "LLM_MODEL_NAME est manquant dans le fichier .env."
@@ -28,9 +29,8 @@ class LLMService:
         system_prompt: str,
         user_prompt: str,
     ) -> str:
-        """Envoie une demande au modèle et retourne sa réponse."""
+        """Envoie une demande à Groq et retourne la réponse du modèle."""
 
-        # Données envoyées à OpenRouter.
         payload = {
             "model": settings.llm_model_name,
             "temperature": 0,
@@ -46,60 +46,50 @@ class LLMService:
             ],
         }
 
-        # Authentifie la requête auprès d'OpenRouter.
         headers = {
             "Authorization": (
-                f"Bearer {settings.openrouter_api_key}"
+                f"Bearer {settings.groq_api_key}"
             ),
             "Content-Type": "application/json",
         }
 
-        # Envoie la requête avec un délai maximal de 30 secondes.
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        # Envoie la requête à Groq.
+        async with httpx.AsyncClient(
+            timeout=60.0,
+        ) as client:
             response = await client.post(
-                f"{settings.openrouter_base_url}/chat/completions",
+                f"{settings.groq_base_url}/chat/completions",
                 headers=headers,
                 json=payload,
             )
 
-        # Ne masque pas une erreur provenant du fournisseur.
+        # Signale clairement une erreur de l'API.
         if response.status_code >= 400:
             print(
-                "Erreur OpenRouter :",
+                "Erreur Groq :",
                 response.status_code,
                 response.text[:1000],
             )
 
             raise RuntimeError(
-                f"Erreur OpenRouter : HTTP {response.status_code}"
+                f"Erreur Groq : HTTP {response.status_code}"
             )
 
-        # Transforme la réponse JSON d'OpenRouter en dictionnaire Python.
         data = response.json()
 
-        # Vérifie si OpenRouter a retourné une erreur dans le JSON.
-        if "error" in data:
-            erreur = data["error"]
-
-            # Récupère le message lorsque celui-ci est disponible.
-            if isinstance(erreur, dict):
-                message = erreur.get(
-                    "message",
-                    "Erreur inconnue retournée par OpenRouter.",
-                )
-            else:
-                message = str(erreur)
-
-            raise RuntimeError(
-                f"Erreur OpenRouter : {message}"
-            )
-
-        # Vérifie que la réponse contient bien le texte généré.
+        # Vérifie que la réponse contient bien du texte.
         try:
-            contenu = data["choices"][0]["message"]["content"]
-        except (KeyError, IndexError, TypeError) as exc:
+            contenu = data[
+                "choices"
+            ][0]["message"]["content"]
+
+        except (
+            KeyError,
+            IndexError,
+            TypeError,
+        ) as exc:
             raise RuntimeError(
-                "OpenRouter a retourné une réponse sans contenu généré."
+                "Groq a retourné une réponse sans contenu généré."
             ) from exc
 
         return contenu.strip()

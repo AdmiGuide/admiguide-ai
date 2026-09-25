@@ -1,0 +1,54 @@
+[
+  {
+    "nom": "Passeport perdu",
+    "statut_recu": "ORIENTATION",
+    "demarche_code_recu": "REMPLACEMENT_PASSEPORT_PERDU",
+    "demarche_code_attendu": "REMPLACEMENT_PASSEPORT_PERDU",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "REMPLACEMENT_PASSEPORT_PERDU",
+      "resume": "L'utilisateur a perdu son passeport sénégalais et a déjà déclaré la perte.",
+      "avertissement": ""
+    }
+  },
+  {
+    "nom": "Retour définitif",
+    "statut_recu": "ORIENTATION",
+    "demarche_code_recu": "RETOUR_EFFETS_PERSONNELS",
+    "demarche_code_attendu": "RETOUR_EFFETS_PERSONNELS",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "RETOUR_EFFETS_PERSONNELS",
+      "resume": "Ressortissante sénégalaise vivant à l'étranger, prépare un retour définitif au Sénégal et prévoit de ramener des effets personnels / biens mobiliers.",
+      "avertissement": ""
+    }
+  },
+  {
+    "nom": "Naissance à l'étranger",
+    "statut_recu": "ORIENTATION",
+    "demarche_code_recu": "NAISSANCE_ETRANGER",
+    "demarche_code_attendu": "NAISSANCE_ETRANGER",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "NAISSANCE_ETRANGER",
+      "resume": "L'utilisateur souhaite faire transcrire la naissance de son enfant, de nationalité sénégalaise, né en France, auprès des autorités sénégalaises. Il possède déjà l'acte de naissance local.",
+      "avertissement": ""
+    }
+  },
+  {
+    "nom": "Décès fonctionnaire",
+    "statut_recu": "ORIENTATION",
+    "demarche_code_recu": "DECES_FONCTIONNAIRE",
+    "demarche_code_attendu": "DECES_FONCTIONNAIRE",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "DECES_FONCTIONNAIRE",
+      "resume": "Le défunt était fonctionnaire en activité et est décédé; l'utilisateur est le conjoint survivant et souhaite connaître les démarches pour les ayants droit.",
+      "avertissement": ""
+    }
+  }
+]
