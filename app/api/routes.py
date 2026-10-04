@@ -57,9 +57,7 @@ async def analyze(request: OrientationRequest):
         # Lance toute la chaîne RAG + LLM + validation.
         return await orientation_service.analyze(
             situation=request.situation,
-            pays_application=request.pays_application,
             demarche_codes=request.demarche_codes,
-            pays_residence=request.pays_residence,
             reponses=reponses,
         )
 

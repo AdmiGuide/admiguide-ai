@@ -22,9 +22,7 @@ class OrientationService:
     async def analyze(
         self,
         situation: str,
-        pays_application: str | None,
         demarche_codes: list[str],
-        pays_residence: str | None = None,
         reponses: list[dict] | None = None,
     ):
         """Analyse une situation et retourne un résultat métier validé."""
@@ -32,7 +30,6 @@ class OrientationService:
         # Recherche les passages officiels pertinents.
         contexte = self.retrieval.build_context(
             texte=situation,
-            pays_application=pays_application,
         )
 
         # Prépare les instructions du modèle.
@@ -42,7 +39,6 @@ class OrientationService:
             situation=situation,
             contexte=contexte,
             demarche_codes=demarche_codes,
-            pays_residence=pays_residence,
             reponses=reponses,
         )
 

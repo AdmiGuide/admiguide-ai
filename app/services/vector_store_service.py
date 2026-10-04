@@ -123,36 +123,15 @@ class VectorStoreService:
         self,
         texte: str,
         limit: int = 3,
-        pays_application: str | None = None,
     ) -> dict:
         # Transforme la demande utilisateur en vecteur.
         vecteur = self.embedding_service.encode_query(texte)
-
-        # Prépare le filtre géographique des sources.
-        filtre = None
-
-        if pays_application:
-            if pays_application == "SN":
-                # Une démarche effectuée au Sénégal utilise les sources sénégalaises.
-                filtre = {
-                    "pays_application": "SN"
-                }
-
-            elif pays_application == "ETRANGER":
-                # Recherche explicitement les sources applicables à l'étranger.
-                filtre = {
-                    "pays_application": "ETRANGER"
-                }
-
-            else:
-                # À l'étranger, accepte une source propre au pays
-                # ou une source consulaire valable à l'étranger en général.
-                filtre = {
-                    "$or": [
-                        {"pays_application": pays_application},
-                        {"pays_application": "ETRANGER"},
-                    ]
-                }
+        
+        # La V1 est limitée au Sénégal.
+        # Ce filtre sera supprimé lorsque le corpus Dakar sera entièrement réindexé.
+        filtre = {
+            "pays_application": "SN"
+        }
 
         return self.collection.query(
             query_embeddings=[vecteur],

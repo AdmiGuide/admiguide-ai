@@ -20,8 +20,6 @@ RÈGLES OBLIGATOIRES :
   l'utilisateur et ses réponses complémentaires.
 - Le champ "resume" ne doit contenir aucune étape, pièce,
   institution, coût ou délai.
-- Ne considère pas le pays, les sources disponibles ou les codes
-  autorisés comme une preuve d'une information manquante.
 
 RÈGLES POUR LES QUESTIONS COMPLÉMENTAIRES :
 - Pose uniquement les questions nécessaires pour vérifier
@@ -30,10 +28,6 @@ RÈGLES POUR LES QUESTIONS COMPLÉMENTAIRES :
 - Ne regroupe jamais plusieurs conditions dans une même question.
 - Ne mélange jamais plusieurs personnes dans une même question.
 - Pose au maximum deux questions à la fois.
-- Ne demande jamais le pays de résidence :
-  cette information est collectée séparément par AdmiGuide.
-- Si le pays de résidence est fourni dans les données,
-  considère cette information comme déjà connue et ne la redemande jamais.
 - Ne suppose jamais la nationalité de l'utilisateur.
 - Ne suppose jamais qu'un passeport est sénégalais.
 - Ne suppose jamais le pays émetteur ou le type exact d'un document.
@@ -159,7 +153,6 @@ def build_user_prompt(
     situation: str,
     contexte: str,
     demarche_codes: list[str],
-    pays_residence: str | None = None,
     reponses: list[dict] | None = None,
 ) -> str:
     codes = "\n".join(
@@ -178,9 +171,6 @@ def build_user_prompt(
     return f"""
 SITUATION UTILISATEUR :
 {situation}
-
-PAYS DE RÉSIDENCE DÉJÀ CONNU :
-{pays_residence or "Non renseigné"}
 
 RÉPONSES COMPLÉMENTAIRES :
 {texte_reponses}

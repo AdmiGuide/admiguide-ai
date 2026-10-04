@@ -15,13 +15,11 @@ class RetrievalService:
     def retrieve(
         self,
         texte: str,
-        pays_application: str | None = None,
         limit: int = 3,
     ) -> list[dict]:
         resultat = self.vector_store.search(
             texte=texte,
             limit=limit,
-            pays_application=pays_application,
         )
 
         documents = resultat["documents"][0]
@@ -52,12 +50,10 @@ class RetrievalService:
     def build_context(
         self,
         texte: str,
-        pays_application: str | None = None,
         limit: int = 3,
     ) -> str:
         contenus = self.retrieve(
             texte=texte,
-            pays_application=pays_application,
             limit=limit,
         )
 

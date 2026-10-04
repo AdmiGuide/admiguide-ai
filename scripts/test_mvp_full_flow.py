@@ -39,7 +39,6 @@ TESTS = [
             "J’ai perdu mon passeport sénégalais. "
             "Je voudrais savoir par où commencer pour le remplacer."
         ),
-        "pays_application": "SN",
         "reponses": [
             {
                 "texte_question": "Avez-vous déjà déclaré la perte ?",
@@ -54,7 +53,6 @@ TESTS = [
             "Je suis ressortissante sénégalaise, je vis à l’étranger "
             "et je prépare mon retour définitif au Sénégal."
         ),
-        "pays_application": "SN",
         "reponses": [
             {
                 "texte_question": "Qu’avez-vous prévu de ramener ?",
@@ -70,7 +68,6 @@ TESTS = [
             "Je souhaite faire transcrire sa naissance auprès "
             "des autorités sénégalaises."
         ),
-        "pays_application": "ETRANGER",
         "reponses": [
             {
                 "texte_question": "Disposez-vous de l’acte de naissance local ?",
@@ -86,7 +83,6 @@ TESTS = [
             "est décédé. Je souhaite connaître les démarches "
             "pour les ayants droit."
         ),
-        "pays_application": "SN",
         "reponses": [
             {
                 "texte_question": "Quel est votre lien avec la personne décédée ?",
@@ -108,7 +104,6 @@ async def main() -> None:
         try:
             resultat = await service.analyze(
                 situation=test["situation"],
-                pays_application=test["pays_application"],
                 demarche_codes=MVP_DEMARCHE_CODES,
                 reponses=test["reponses"],
             )
@@ -156,8 +151,13 @@ async def main() -> None:
             await asyncio.sleep(5)
 
     fichier = ROOT_DIR / "scripts" / "test_mvp_full_flow_results.json"
+
     fichier.write_text(
-        json.dumps(resultats, ensure_ascii=False, indent=2),
+        json.dumps(
+            resultats,
+            ensure_ascii=False,
+            indent=2,
+        ),
         encoding="utf-8",
     )
 
