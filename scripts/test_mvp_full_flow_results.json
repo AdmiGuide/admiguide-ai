@@ -1,54 +1,54 @@
 [
   {
-    "nom": "Passeport perdu",
+    "nom": "Décès fonctionnaire en activité",
     "statut_recu": "ORIENTATION",
-    "demarche_code_recu": "REMPLACEMENT_PASSEPORT_PERDU",
-    "demarche_code_attendu": "REMPLACEMENT_PASSEPORT_PERDU",
+    "statut_attendu": "ORIENTATION",
+    "demarche_code_recu": "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
+    "demarche_code_attendu": "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
     "verdict": "OK",
     "resultat_complet": {
       "statut": "ORIENTATION",
-      "demarche_code": "REMPLACEMENT_PASSEPORT_PERDU",
-      "resume": "L'utilisateur a perdu son passeport sénégalais, a déjà déclaré la perte et souhaite le remplacer.",
+      "demarche_code": "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
+      "resume": "Le mari de l'utilisateur était fonctionnaire et était encore en activité au moment de son décès.",
       "avertissement": ""
     }
   },
   {
-    "nom": "Retour définitif",
+    "nom": "Décès fonctionnaire après la retraite",
     "statut_recu": "ORIENTATION",
-    "demarche_code_recu": "RETOUR_EFFETS_PERSONNELS",
-    "demarche_code_attendu": "RETOUR_EFFETS_PERSONNELS",
+    "statut_attendu": "ORIENTATION",
+    "demarche_code_recu": "REVERSION_PENSION_APRES_RETRAITE",
+    "demarche_code_attendu": "REVERSION_PENSION_APRES_RETRAITE",
     "verdict": "OK",
     "resultat_complet": {
       "statut": "ORIENTATION",
-      "demarche_code": "RETOUR_EFFETS_PERSONNELS",
-      "resume": "L'utilisateur est ressortissant sénégalais, vit à l'étranger et prépare un retour définitif au Sénégal, avec l'intention de ramener des effets personnels ou biens mobiliers.",
+      "demarche_code": "REVERSION_PENSION_APRES_RETRAITE",
+      "resume": "Le père de l'utilisateur était un ancien fonctionnaire déjà à la retraite au moment de son décès.",
       "avertissement": ""
     }
   },
   {
-    "nom": "Naissance à l'étranger",
-    "statut_recu": "ORIENTATION",
-    "demarche_code_recu": "NAISSANCE_ETRANGER",
-    "demarche_code_attendu": "NAISSANCE_ETRANGER",
+    "nom": "Décès fonctionnaire - situation à préciser",
+    "statut_recu": "PRECISIONS_REQUISES",
+    "statut_attendu": "PRECISIONS_REQUISES",
+    "question_attendue": "Au moment de son décès, la personne travaillait-elle encore comme fonctionnaire ou avait-elle déjà pris sa retraite ?",
+    "questions_recues": [
+      "Au moment de son décès, la personne travaillait-elle encore comme fonctionnaire ou avait-elle déjà pris sa retraite ?"
+    ],
     "verdict": "OK",
     "resultat_complet": {
-      "statut": "ORIENTATION",
-      "demarche_code": "NAISSANCE_ETRANGER",
-      "resume": "L'enfant de nationalité sénégalaise est né en France; l'utilisateur souhaite faire transcrire la naissance auprès des autorités sénégalaises et possède déjà l'acte de naissance local.",
-      "avertissement": ""
-    }
-  },
-  {
-    "nom": "Décès fonctionnaire",
-    "statut_recu": "ORIENTATION",
-    "demarche_code_recu": "DECES_FONCTIONNAIRE",
-    "demarche_code_attendu": "DECES_FONCTIONNAIRE",
-    "verdict": "OK",
-    "resultat_complet": {
-      "statut": "ORIENTATION",
-      "demarche_code": "DECES_FONCTIONNAIRE",
-      "resume": "Le défunt était fonctionnaire en activité décédé, l'utilisateur est le conjoint survivant et souhaite connaître les démarches pour les ayants droit.",
-      "avertissement": ""
+      "statut": "PRECISIONS_REQUISES",
+      "questions": [
+        {
+          "texte": "Au moment de son décès, la personne travaillait-elle encore comme fonctionnaire ou avait-elle déjà pris sa retraite ?",
+          "type_question": "CHOIX_UNIQUE",
+          "options": [
+            "Elle travaillait encore comme fonctionnaire",
+            "Elle était déjà à la retraite",
+            "Je ne sais pas"
+          ]
+        }
+      ]
     }
   }
 ]

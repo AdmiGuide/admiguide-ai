@@ -1,0 +1,122 @@
+=== SOURCE ===
+ID: DECES_FONCTIONNAIRE_ACTIVITE_01
+TITRE: Réversion de la pension et capital-décès pour un fonctionnaire décédé en activité
+URL: https://budget.sec.gouv.sn/consulter-l-article/demander-la-reversion-de-la-pension-et-le-capital-deces-pour-un-fonctionnaire-decede-en-activite
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-04
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Demander la réversion de la pension et le capital-décès lorsqu'un fonctionnaire décède alors qu'il travaille encore.
+
+Principe :
+Lorsqu'un fonctionnaire décède alors qu'il est encore en activité, ses ayants-cause peuvent demander à la Direction des Pensions la liquidation et la réversion de ses droits à pension ainsi que le paiement du capital-décès.
+
+Cette démarche s'applique lorsque la personne décédée travaillait encore comme fonctionnaire au moment de son décès.
+
+Personnes pouvant effectuer la démarche :
+- Les ayants-cause du défunt.
+- Toute personne dûment mandatée par eux.
+
+Documents à fournir :
+- Une demande de liquidation de pension sur imprimé disponible au bureau d'accueil et d'information.
+- Une demande manuscrite pour le capital-décès.
+- Un acte de naissance ou une photocopie légalisée de la carte nationale d'identité du ou des conjoints survivants.
+- Un acte de mariage.
+- Un acte de décès.
+- Un acte de non-remariage pour les femmes âgées de moins de 45 ans et un acte de non-séparation de corps.
+- Un jugement d'hérédité.
+- Un certificat de non-opposition ni appel.
+- Les actes de naissance des enfants mineurs et majeurs.
+- Un certificat de vie collectif des enfants.
+- Un acte de tutelle si la mère n'est pas tutrice.
+- Une photocopie légalisée de la carte d'identité du tuteur.
+- L'état signalétique des services militaires, s'il y a lieu.
+- Le matricule de pension militaire pour les titulaires d'une pension militaire.
+- Les justificatifs de validation des services auxiliaires effectués par le fonctionnaire, lorsque cela s'applique :
+  - l'autorisation de validation délivrée par la Direction des Pensions ;
+  - l'état des sommes dues délivré par la Direction des Pensions ;
+  - la quittance de versement du Trésor ou le certificat administratif de la Direction de la Solde.
+- L'acte de radiation délivré par le ministère chargé de l'administration.
+- Le relevé général des services délivré par le ministère chargé de l'administration.
+- Le certificat de cessation de paiement du fonctionnaire délivré par la Direction de la Solde ou par le dernier employeur pour les fonctionnaires détachés.
+
+Coût :
+Gratuit.
+
+Documents délivrés :
+- La décision portant concession de pension après le circuit de visa.
+- La carte de pension après la prise en charge du dossier.
+- La décision accordant le capital-décès après le circuit des visas.
+
+Délai :
+La source indique un délai de trois mois pour les décisions.
+La carte de pension est délivrée à partir du 27 de chaque mois après la prise en charge du dossier.
+
+Service compétent :
+Direction des Pensions.
+
+En cas de perte de la carte de pension :
+Se rapprocher de la Direction des Pensions.
+
+Limite d'application :
+Cette démarche concerne uniquement le cas où le fonctionnaire travaillait encore au moment de son décès.
+Elle ne correspond pas au cas d'un fonctionnaire qui était déjà à la retraite au moment de son décès.
+
+
+=== SOURCE ===
+ID: DECES_FONCTIONNAIRE_RETRAITE_01
+TITRE: Réversion d'une pension de retraite pour un fonctionnaire décédé après la retraite
+URL: https://budget.sec.gouv.sn/consulter-l-article/demander-la-reversion-d-une-pension-de-retraite-pour-un-fonctionnaire-decede-apres-la-retraite
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-04
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Demander la réversion de la pension de retraite lorsqu'un ancien fonctionnaire décède alors qu'il est déjà à la retraite.
+
+Principe :
+Lorsqu'un fonctionnaire à la retraite décède, ses ayants-cause peuvent demander la réversion de sa pension à la Direction des Pensions.
+
+Cette démarche s'applique lorsque la personne décédée était déjà à la retraite au moment de son décès.
+
+Personnes pouvant effectuer la démarche :
+- Les ayants-cause du défunt.
+- Toute personne dûment mandatée par eux.
+
+Documents à fournir :
+- Une demande de liquidation de pension sur imprimé disponible au bureau d'accueil et d'information.
+- Un acte de naissance ou une photocopie légalisée de la carte nationale d'identité du ou des conjoints survivants.
+- Un acte de mariage.
+- Un acte de non-divorce et de non-remariage si la veuve est âgée de moins de 45 ans.
+- Un acte de décès en deux exemplaires.
+- Un jugement d'hérédité.
+- Un certificat de non-opposition ni appel.
+- Les actes de naissance des enfants mineurs et majeurs.
+- Un certificat de vie collectif des enfants.
+- Un acte de tutelle si la mère n'est pas tutrice ou si les enfants ne sont pas à la charge de leur mère.
+- Une photocopie légalisée de la carte d'identité du tuteur.
+- La carte ou le bulletin de pension du défunt.
+
+Coût :
+Gratuit.
+
+Documents délivrés :
+- L'acte de concession de pension après le circuit de visa.
+- La carte de pension après la prise en charge et le paiement.
+
+Délai :
+La source indique un délai d'environ trois mois pour la décision de concession.
+La carte de pension est délivrée à partir du 27 de chaque mois après la prise en charge et le paiement.
+
+Service compétent :
+Direction des Pensions.
+
+En cas de perte :
+Produire un certificat de perte et se rapprocher de la Direction des Pensions.
+
+Limite d'application :
+Cette démarche concerne uniquement le cas où le fonctionnaire était déjà à la retraite au moment de son décès.
+Elle ne correspond pas au cas d'un fonctionnaire qui travaillait encore au moment de son décès.
