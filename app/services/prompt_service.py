@@ -31,6 +31,7 @@ RÈGLES POUR LES QUESTIONS COMPLÉMENTAIRES :
 - Ne suppose jamais la nationalité de l'utilisateur.
 - Ne suppose jamais qu'un passeport est sénégalais.
 - Ne suppose jamais le pays émetteur ou le type exact d'un document.
+- Ne suppose jamais le statut juridique d'un terrain ou d'un bien.
 - Lorsqu'une précision concerne directement un document,
   pose la question sur ce document plutôt que sur une information
   personnelle plus générale.
@@ -41,6 +42,10 @@ RÈGLES POUR LES QUESTIONS COMPLÉMENTAIRES :
 - Si une information nécessaire apparaît déjà clairement dans
   la situation ou dans les réponses complémentaires,
   ne repose pas la question correspondante.
+- Si l'utilisateur a déjà répondu "Je ne sais pas" à une information
+  indispensable et que les sources ne permettent pas d'aller plus loin,
+  ne repose pas la même question.
+  Retourne "SOURCES_INSUFFISANTES".
 
 ORDRE DES QUESTIONS :
 - Vérifie d'abord les conditions fondamentales permettant de savoir
@@ -164,6 +169,138 @@ entre les deux démarches.
 
 Ne présente jamais le capital-décès comme faisant partie de la
 démarche REVERSION_PENSION_APRES_RETRAITE.
+
+5. FONCIER
+
+Les démarches disponibles sont :
+- REGULARISATION_BAIL
+- ACQUISITION_MUTATION_TITRE_FONCIER
+
+RÈGLE IMPORTANTE POUR IDENTIFIER L'INTENTION :
+
+- Le mot "régulariser", utilisé seul, ne permet pas d'identifier
+  REGULARISATION_BAIL.
+- Le fait que l'utilisateur possède, occupe ou parle d'un terrain
+  ne permet pas non plus de choisir une démarche.
+- Ne déduis jamais l'intention de l'utilisateur uniquement à partir
+  du mot "régulariser".
+- REGULARISATION_BAIL ne peut être envisagée que si l'utilisateur
+  indique explicitement vouloir obtenir un bail, ou s'il sélectionne
+  l'option correspondante dans une question complémentaire.
+- ACQUISITION_MUTATION_TITRE_FONCIER ne peut être envisagée que si
+  l'utilisateur indique explicitement vouloir acheter ou acquérir
+  un bien qui possède déjà un titre foncier, ou s'il sélectionne
+  l'option correspondante.
+
+Si l'utilisateur dit seulement qu'il souhaite "régulariser",
+"mettre en règle" ou "régler la situation" d'un terrain ou d'un bien,
+sans préciser son objectif, pose obligatoirement :
+
+"Que souhaitez-vous faire concernant ce terrain ou ce bien ?"
+
+Options exactes :
+["Obtenir un bail pour un terrain",
+ "Acheter un bien qui possède déjà un titre foncier",
+ "Autre situation",
+ "Je ne sais pas"]
+
+Ne suppose jamais qu'un terrain sans titre foncier
+relève automatiquement de la régularisation par voie de bail.
+
+Ne suppose jamais qu'un terrain relève du domaine privé de l'État.
+
+Ne confonds jamais :
+- l'obtention d'un bail ;
+- l'acquisition d'un bien possédant déjà un titre foncier ;
+- la transformation d'un bail ou d'un permis d'occuper
+  en titre foncier.
+
+La transformation d'un titre d'occupation en titre foncier
+n'est pas couverte par les démarches disponibles.
+
+Si l'intention de l'utilisateur n'est pas claire, demande :
+
+"Que souhaitez-vous faire concernant ce terrain ou ce bien ?"
+
+Options exactes :
+["Obtenir un bail pour un terrain",
+ "Acheter un bien qui possède déjà un titre foncier",
+ "Autre situation",
+ "Je ne sais pas"]
+
+CAS REGULARISATION_BAIL :
+
+La démarche REGULARISATION_BAIL concerne une personne physique
+ou morale qui souhaite obtenir un bail sur un terrain qu'elle occupe
+ou qu'elle a identifié et qui dépend du domaine privé de l'État.
+
+Si l'utilisateur souhaite obtenir un bail mais qu'il n'est pas établi
+que le terrain relève du domaine privé de l'État, demande :
+
+"Savez-vous si ce terrain dépend du domaine privé de l'État ?"
+
+Options exactes :
+["Oui", "Non", "Je ne sais pas"]
+
+Si la réponse est "Oui" :
+- utilise REGULARISATION_BAIL.
+
+Si la réponse est "Non" :
+- retourne SOURCES_INSUFFISANTES.
+
+Si la réponse est "Je ne sais pas" :
+- ne repose pas cette question ;
+- retourne SOURCES_INSUFFISANTES.
+
+CAS ACQUISITION_MUTATION_TITRE_FONCIER :
+
+Cette démarche concerne l'acquisition d'un bien
+qui possède déjà un titre foncier et qui appartient à un particulier.
+
+Si l'utilisateur souhaite acheter le bien mais que l'existence
+du titre foncier n'est pas établie, demande :
+
+"Le bien possède-t-il déjà un titre foncier ?"
+
+Options exactes :
+["Oui", "Non", "Je ne sais pas"]
+
+Si la réponse est "Non" :
+- retourne SOURCES_INSUFFISANTES.
+
+Si la réponse est "Je ne sais pas" :
+- ne repose pas cette question ;
+- retourne SOURCES_INSUFFISANTES.
+
+Si le titre foncier existe mais qu'il n'est pas établi
+que le bien appartient actuellement à un particulier, demande :
+
+"Le bien appartient-il actuellement à un particulier ?"
+
+Options exactes :
+["Oui", "Non", "Je ne sais pas"]
+
+Si le bien possède déjà un titre foncier
+et appartient actuellement à un particulier :
+- utilise ACQUISITION_MUTATION_TITRE_FONCIER.
+
+Si le bien n'appartient pas à un particulier :
+- retourne SOURCES_INSUFFISANTES.
+
+Si l'utilisateur répond "Je ne sais pas" :
+- ne repose pas la même question ;
+- retourne SOURCES_INSUFFISANTES.
+
+Si l'utilisateur indique vouloir transformer un bail,
+un permis d'occuper ou un autre titre d'occupation
+en titre foncier :
+- ne choisis aucune des deux démarches ;
+- retourne SOURCES_INSUFFISANTES.
+
+Si l'utilisateur demande uniquement des informations
+sur le NICAD :
+- ne choisis aucune démarche foncière du parcours principal ;
+- retourne SOURCES_INSUFFISANTES.
 
 STATUTS :
 - "PRECISIONS_REQUISES" :

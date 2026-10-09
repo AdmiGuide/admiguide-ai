@@ -1,54 +1,66 @@
 [
   {
-    "nom": "Décès fonctionnaire en activité",
+    "nom": "Régularisation par voie de bail",
     "statut_recu": "ORIENTATION",
     "statut_attendu": "ORIENTATION",
-    "demarche_code_recu": "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
-    "demarche_code_attendu": "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
+    "demarche_code_recu": "REGULARISATION_BAIL",
+    "demarche_code_attendu": "REGULARISATION_BAIL",
     "verdict": "OK",
     "resultat_complet": {
       "statut": "ORIENTATION",
-      "demarche_code": "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
-      "resume": "Le mari de l'utilisateur était fonctionnaire et était encore en activité au moment de son décès.",
+      "demarche_code": "REGULARISATION_BAIL",
+      "resume": "L'utilisateur occupe un terrain relevant du domaine privé de l'État et souhaite obtenir un bail pour régulariser sa situation.",
       "avertissement": ""
     }
   },
   {
-    "nom": "Décès fonctionnaire après la retraite",
+    "nom": "Acquisition d'un bien sous titre foncier",
     "statut_recu": "ORIENTATION",
     "statut_attendu": "ORIENTATION",
-    "demarche_code_recu": "REVERSION_PENSION_APRES_RETRAITE",
-    "demarche_code_attendu": "REVERSION_PENSION_APRES_RETRAITE",
+    "demarche_code_recu": "ACQUISITION_MUTATION_TITRE_FONCIER",
+    "demarche_code_attendu": "ACQUISITION_MUTATION_TITRE_FONCIER",
     "verdict": "OK",
     "resultat_complet": {
       "statut": "ORIENTATION",
-      "demarche_code": "REVERSION_PENSION_APRES_RETRAITE",
-      "resume": "Le père de l'utilisateur était un ancien fonctionnaire déjà à la retraite au moment de son décès.",
+      "demarche_code": "ACQUISITION_MUTATION_TITRE_FONCIER",
+      "resume": "L'utilisateur souhaite acheter un terrain appartenant à un particulier, le terrain possède déjà un titre foncier et il veut que le bien soit inscrit à son nom après l'achat.",
       "avertissement": ""
     }
   },
   {
-    "nom": "Décès fonctionnaire - situation à préciser",
+    "nom": "Situation foncière à préciser",
     "statut_recu": "PRECISIONS_REQUISES",
     "statut_attendu": "PRECISIONS_REQUISES",
-    "question_attendue": "Au moment de son décès, la personne travaillait-elle encore comme fonctionnaire ou avait-elle déjà pris sa retraite ?",
+    "question_attendue": "Que souhaitez-vous faire concernant ce terrain ou ce bien ?",
     "questions_recues": [
-      "Au moment de son décès, la personne travaillait-elle encore comme fonctionnaire ou avait-elle déjà pris sa retraite ?"
+      "Que souhaitez-vous faire concernant ce terrain ou ce bien ?"
     ],
     "verdict": "OK",
     "resultat_complet": {
       "statut": "PRECISIONS_REQUISES",
       "questions": [
         {
-          "texte": "Au moment de son décès, la personne travaillait-elle encore comme fonctionnaire ou avait-elle déjà pris sa retraite ?",
+          "texte": "Que souhaitez-vous faire concernant ce terrain ou ce bien ?",
           "type_question": "CHOIX_UNIQUE",
           "options": [
-            "Elle travaillait encore comme fonctionnaire",
-            "Elle était déjà à la retraite",
+            "Obtenir un bail pour un terrain",
+            "Acheter un bien qui possède déjà un titre foncier",
+            "Autre situation",
             "Je ne sais pas"
           ]
         }
       ]
+    }
+  },
+  {
+    "nom": "Transformation bail en titre foncier non couverte",
+    "statut_recu": "SOURCES_INSUFFISANTES",
+    "statut_attendu": "SOURCES_INSUFFISANTES",
+    "message_recu": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles.",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "SOURCES_INSUFFISANTES",
+      "message": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles."
     }
   }
 ]

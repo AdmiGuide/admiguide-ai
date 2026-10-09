@@ -1,0 +1,85 @@
+=== SOURCE ===
+ID: REGULARISATION_BAIL_DGID_01
+TITRE: Régularisation par voie de bail
+URL: https://www.dgid.sn/fiches/regularisation-bail
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-09
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Demander une régularisation par voie de bail.
+
+Principe :
+La demande de régularisation par voie de bail permet à une personne physique ou morale d'obtenir un titre de bail sur un terrain qu'elle occupe ou qu'elle a identifié et qui dépend du domaine privé de l'État.
+
+Cette démarche s'applique lorsqu'un usager souhaite obtenir un bail sur un terrain relevant du domaine privé de l'État.
+
+Service compétent :
+Le chef du bureau des Domaines territorialement compétent.
+
+Pièces à fournir :
+- Une demande de régularisation par voie de bail.
+- Une photocopie du titre ou de la délibération.
+- Une photocopie du plan de masse.
+- Une photocopie du plan de situation.
+- Une photocopie de la carte nationale d'identité.
+- Un acte de vente enregistré.
+
+Bon à savoir :
+Les documents doivent être fournis en cinq exemplaires.
+
+Limite d'application :
+Cette démarche concerne l'obtention d'un bail sur un terrain dépendant du domaine privé de l'État.
+Elle ne correspond pas à l'acquisition d'un immeuble qui possède déjà un titre foncier appartenant à un particulier.
+
+
+=== SOURCE ===
+ID: ACQUISITION_TITRE_FONCIER_DGID_01
+TITRE: Régularisation d'un titre foncier (TF)
+URL: https://www.dgid.sn/fiches/regularisation-tf
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-09
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Acquérir un immeuble qui possède déjà un titre foncier et inscrire le droit de l'acquéreur au livre foncier.
+
+Principe :
+Le titre foncier est un titre de propriété définitif et inattaquable sur un immeuble bâti ou non bâti.
+
+Cette procédure concerne l'acquisition d'un immeuble faisant déjà l'objet d'un titre foncier et appartenant à un particulier, jusqu'à l'inscription du droit de l'acquéreur au livre foncier.
+
+Intervenants :
+La procédure se déroule obligatoirement avec l'accompagnement d'un notaire territorialement compétent.
+
+Elle implique également le bureau de la Conservation de la propriété et des droits fonciers de la Direction générale des Impôts et des Domaines.
+
+Étapes de la procédure :
+- Demander auprès du Conservateur de la propriété et des droits fonciers un état de droits réels permettant notamment de vérifier l'identité du propriétaire, la consistance de l'immeuble et les éventuelles charges.
+- Effectuer la déclaration préalable de transaction auprès du Directeur chargé des Domaines.
+- Faire établir l'acte de vente par le notaire. L'acte est signé par l'acheteur et le vendeur.
+- Le notaire transmet ensuite le dossier au Conservateur.
+- Le dossier fait l'objet de la formalité fusionnée à la Conservation foncière comprenant l'enregistrement de l'acte et la publicité foncière.
+- À la demande du notaire, un état de droits réels constatant la mutation de l'immeuble au nom de l'acquéreur est délivré.
+
+Coût :
+- La déclaration préalable de transaction est gratuite.
+- L'état de droits réels est délivré pour un coût généralement compris entre 500 et 1 500 FCFA.
+- Les droits et taxes liés à l'acquisition sont payés auprès du notaire.
+
+Délai :
+- L'état de droits réels est délivré en trois jours.
+- Les étapes de la procédure doivent se dérouler dans un délai réglementaire n'excédant pas 30 jours.
+
+Résultat :
+La procédure aboutit lorsque le droit est muté au nom de l'acquéreur et que celui-ci est inscrit au livre foncier comme propriétaire.
+
+Bon à savoir :
+Pour plus de sécurité, la source recommande que le prix convenu soit versé à la comptabilité du notaire.
+
+Limite d'application :
+Cette démarche concerne l'acquisition d'un bien qui possède déjà un titre foncier et appartient à un particulier.
+
+La transformation d'un titre d'occupation, notamment un bail ou un permis d'occuper, en titre foncier suit une procédure différente et n'est pas couverte par cette démarche.
