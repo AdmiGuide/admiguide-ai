@@ -83,3 +83,35 @@ Limite d'application :
 Cette démarche concerne l'acquisition d'un bien qui possède déjà un titre foncier et appartient à un particulier.
 
 La transformation d'un titre d'occupation, notamment un bail ou un permis d'occuper, en titre foncier suit une procédure différente et n'est pas couverte par cette démarche.
+
+=== SOURCE ===
+ID: ETAT_DROITS_REELS_DGID_01
+TITRE: État de droits réels
+URL: https://www.dgid.sn/fiches/etat-droits-reels
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-09
+PAYS_APPLICATION: SN
+
+CONTENU:
+Document :
+État de droits réels.
+
+Principe :
+L'état de droits réels est un document administratif permettant
+à une personne physique ou morale intéressée d'obtenir des
+informations sur un bien immobilier, qu'il soit à usage
+d'habitation ou de culture.
+
+Service compétent :
+Le Conservateur de la propriété et des droits fonciers
+territorialement compétent.
+
+Pièces à fournir :
+- Une copie du titre foncier.
+- Une copie de la carte nationale d'identité.
+
+Utilité dans une acquisition immobilière :
+Dans la procédure d'acquisition d'un immeuble possédant déjà
+un titre foncier, l'état de droits réels permet notamment
+de vérifier l'identité du propriétaire, la consistance
+de l'immeuble et les éventuelles charges inscrites.
