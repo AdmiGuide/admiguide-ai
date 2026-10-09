@@ -9,7 +9,7 @@
     "resultat_complet": {
       "statut": "ORIENTATION",
       "demarche_code": "REGULARISATION_BAIL",
-      "resume": "L'utilisateur occupe un terrain relevant du domaine privé de l'État et souhaite obtenir un bail pour régulariser sa situation.",
+      "resume": "L'utilisateur occupe un terrain dépendant du domaine privé de l'État et souhaite obtenir un bail pour régulariser sa situation.",
       "avertissement": ""
     }
   },
@@ -23,7 +23,7 @@
     "resultat_complet": {
       "statut": "ORIENTATION",
       "demarche_code": "ACQUISITION_MUTATION_TITRE_FONCIER",
-      "resume": "L'utilisateur souhaite acheter un terrain appartenant à un particulier, le terrain possède déjà un titre foncier et il veut que le bien soit inscrit à son nom après l'achat.",
+      "resume": "L'utilisateur souhaite acheter un terrain appartenant à un particulier, déjà doté d'un titre foncier, et faire inscrire le bien à son nom après l'achat.",
       "avertissement": ""
     }
   },
@@ -56,11 +56,11 @@
     "nom": "Transformation bail en titre foncier non couverte",
     "statut_recu": "SOURCES_INSUFFISANTES",
     "statut_attendu": "SOURCES_INSUFFISANTES",
-    "message_recu": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles.",
+    "message_recu": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles (REGULARISATION_BAIL ou ACQUISITION_MUTATION_TITRE_FONCIER).",
     "verdict": "OK",
     "resultat_complet": {
       "statut": "SOURCES_INSUFFISANTES",
-      "message": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles."
+      "message": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles (REGULARISATION_BAIL ou ACQUISITION_MUTATION_TITRE_FONCIER)."
     }
   }
 ]

@@ -78,53 +78,8 @@ pose obligatoirement :
 Options exactes :
 ["Oui, j'ai une déclaration", "Non, pas encore", "Je ne sais pas"]
 
-2. RETOUR_EFFETS_PERSONNELS
 
-Conditions fondamentales :
-- il s'agit d'un retour définitif au Sénégal ;
-- le demandeur est ressortissant sénégalais ;
-- il vit à l'étranger.
-
-Si plusieurs de ces informations manquent :
-- ne les regroupe pas dans une seule question ;
-- pose une ou deux questions simples à la fois.
-
-Lorsque ces conditions sont établies et que les biens à ramener
-ne sont pas encore précisés, pose obligatoirement :
-
-"Qu'avez-vous prévu de ramener ?"
-
-Options exactes :
-["Des effets personnels / biens mobiliers",
- "D'autres biens",
- "Je prépare encore mon inventaire"]
-
-Ne déduis pas qu'un bien particulier, notamment un véhicule,
-est couvert par l'exonération si la source ne le précise pas.
-
-3. NAISSANCE_ETRANGER
-
-Conditions fondamentales :
-- la naissance a eu lieu à l'étranger ;
-- la démarche concerne un ressortissant sénégalais.
-
-Si le lieu de naissance n'est pas établi :
-- vérifie d'abord si l'enfant est né à l'étranger.
-
-Si l'applicabilité au ressortissant sénégalais n'est pas établie :
-- pose une question distincte ;
-- ne mélange jamais dans la même question la nationalité de l'enfant
-  et celle de ses parents.
-
-Lorsque ces conditions sont établies et que l'existence de l'acte
-de naissance local n'est pas connue, pose obligatoirement :
-
-"Disposez-vous de l'acte de naissance local ?"
-
-Options exactes :
-["Oui, je l'ai reçu", "La demande est en cours", "Pas encore"]
-
-4. PENSIONS_DECES
+2. PENSIONS_DECES
 
 Les démarches disponibles sont :
 - REVERSION_PENSION_CAPITAL_DECES_ACTIVITE
@@ -170,7 +125,7 @@ entre les deux démarches.
 Ne présente jamais le capital-décès comme faisant partie de la
 démarche REVERSION_PENSION_APRES_RETRAITE.
 
-5. FONCIER
+3. FONCIER
 
 Les démarches disponibles sont :
 - REGULARISATION_BAIL
