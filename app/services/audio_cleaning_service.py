@@ -67,116 +67,36 @@ def clean_audio(
     # La variable "command" contient exactement la commande
     # que Python va demander à FFmpeg d'exécuter.
     command = [
-
-        # Programme à utiliser.
         "ffmpeg",
-
-        # Autorise FFmpeg à remplacer le fichier de sortie
-        # s'il existe déjà.
         "-y",
 
-
-        # ------------------------------------------------------
-        # FICHIER AUDIO D'ENTRÉE
-        # ------------------------------------------------------
-
-        # -i signifie "input".
-        #
-        # FFmpeg va lire le fichier audio original,
-        # généralement le fichier WebM envoyé par Angular.
+        # Fichier audio original à traiter.
         "-i",
         str(input_path),
 
-
-        # ------------------------------------------------------
-        # FILTRES DE NETTOYAGE AUDIO
-        # ------------------------------------------------------
-
-        # -af signifie "audio filters".
-        #
-        # On applique ici plusieurs traitements
-        # les uns après les autres.
+        # Réduction du bruit et suppression prudente
+        # des silences en début et fin d'enregistrement.
         "-af",
-
         (
-            # afftdn est un filtre FFmpeg de réduction
-            # du bruit audio.
-            #
-            # Il permet d'atténuer certains bruits de fond
-            # comme un ventilateur, un souffle ou un bruit
-            # relativement constant.
             "afftdn,"
-
-            # silenceremove permet de supprimer certaines
-            # périodes pendant lesquelles aucune parole
-            # significative n'est détectée.
             "silenceremove="
-
-            # Supprime le silence situé au début de l'audio.
             "start_periods=1:"
-
-            # Il faut au moins 0,3 seconde de silence
-            # pour que cette zone soit considérée
-            # comme un silence à supprimer.
-            "start_duration=0.3:"
-
-            # Tout son inférieur à environ -45 dB
-            # est considéré ici comme suffisamment faible
-            # pour être traité comme du silence.
-            "start_threshold=-45dB:"
-
-            # -1 indique à FFmpeg de rechercher également
-            # des silences au milieu et à la fin de l'audio.
-            "stop_periods=-1:"
-
-            # Un silence doit durer au moins 1,2 seconde
-            # avant d'être supprimé.
-            #
-            # Pour conserver les petites pauses
-            "stop_duration=1.2:"
-
-            # Même seuil sonore pour les silences
-            # situés pendant ou après la parole.
-            "stop_threshold=-45dB"
+            "start_duration=0.1:"
+            "start_threshold=-55dB:"
+            "start_silence=0.2:"
+            "stop_periods=1:"
+            "stop_duration=1.5:"
+            "stop_threshold=-55dB:"
+            "stop_silence=0.2"
         ),
 
-
-        # ------------------------------------------------------
-        # CONVERSION EN MONO
-        # ------------------------------------------------------
-
-        # -ac signifie "audio channels".
-        #
-        # 1 signifie qu'on conserve un seul canal audio.
-        #
-        # Pour une voix humaine, la stéréo n'est pas
-        # nécessaire pour la transcription.
+        # Format adapté à la transcription vocale.
         "-ac",
         "1",
-
-
-        # ------------------------------------------------------
-        # FRÉQUENCE AUDIO
-        # ------------------------------------------------------
-
-        # -ar signifie "audio sample rate".
-        #
-        # On convertit l'enregistrement en 16 000 Hz.
-        #
-        # 16 kHz est une fréquence couramment utilisée
-        # pour le traitement de la parole.
         "-ar",
         "16000",
 
-
-        # ------------------------------------------------------
-        # FICHIER DE SORTIE
-        # ------------------------------------------------------
-
-        # FFmpeg écrit ici le nouvel audio nettoyé.
-        #
-        # Dans notre cas, output_path sera généralement
-        # un fichier avec l'extension .wav.
+        # Fichier WAV nettoyé produit par FFmpeg.
         str(output_path),
     ]
 
@@ -211,12 +131,6 @@ def clean_audio(
         )
 
     except subprocess.CalledProcessError as exc:
-
-        # Affiche dans le terminal le véritable message
-        # retourné par FFmpeg afin de faciliter le diagnostic.
-        print("\n========== ERREUR FFMPEG ==========")
-        print(exc.stderr)
-        print("===================================\n")
 
         raise AudioCleaningError(
             "Le nettoyage de l'audio a échoué."

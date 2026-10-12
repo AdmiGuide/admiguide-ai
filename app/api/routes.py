@@ -9,6 +9,10 @@ from fastapi import (
     HTTPException,
     UploadFile,
 )
+from app.services.transcription_service import (
+    TranscriptionError,
+    transcribe_audio as transcribe_audio_file,
+)
 
 # Service chargé de nettoyer les enregistrements vocaux.
 from app.services.audio_cleaning_service import (
@@ -85,8 +89,9 @@ async def transcribe_audio(
     - de convertir l'audio en mono ;
     - de convertir sa fréquence en 16 kHz.
 
-    La transcription de la voix en texte sera ajoutée
-    dans une prochaine étape.
+    Après le nettoyage, le fichier WAV est envoyé
+    au service de transcription afin de convertir
+    la voix de l'utilisateur en texte.
     """
 
     # ======================================================
@@ -117,20 +122,6 @@ async def transcribe_audio(
     audio_content = await audio.read()
 
 
-    # Informations temporaires utiles pendant nos tests.
-    # Nous les supprimerons lorsque la fonctionnalité
-    # de saisie vocale sera complètement validée.
-    print("\n========== AUDIO REÇU ==========")
-    print("Nom :", audio.filename)
-    print("Type :", audio.content_type)
-    print("Taille :", len(audio_content))
-    print(
-        "Premiers octets :",
-        audio_content[:16].hex(),
-    )
-    print("================================\n")
-
-
     # Un fichier sans contenu ne doit pas être envoyé
     # à FFmpeg.
     if not audio_content:
@@ -143,11 +134,6 @@ async def transcribe_audio(
     # ======================================================
     # 3. RÉCUPÉRATION DE L'EXTENSION
     # ======================================================
-
-    # Exemple :
-    #
-    # perte_passport.mp3 -> .mp3
-    # audio.webm         -> .webm
     #
     # Si aucun nom n'est fourni, WebM est utilisé
     # par défaut car MediaRecorder produit actuellement
@@ -250,6 +236,28 @@ async def transcribe_audio(
                 ),
             ) from exc
 
+        # ==================================================
+        # 7. TRANSCRIPTION DE L'AUDIO NETTOYÉ
+        # ==================================================
+
+        try:
+
+            # Envoie le fichier WAV nettoyé à Whisper
+            # via l'API Groq et récupère le texte reconnu.
+            transcription = await transcribe_audio_file(
+                audio_path=cleaned_path,
+            )
+
+        except TranscriptionError as exc:
+
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    "Le service de transcription "
+                    "est temporairement indisponible."
+                ),
+            ) from exc
+
 
         # ==================================================
         # 7. RÉSULTAT DU TEST
@@ -263,16 +271,9 @@ async def transcribe_audio(
         # une nouvelle version de l'audio.
         return {
             "message": (
-                "Audio reçu et nettoyé correctement."
+                "Audio transcrit correctement."
             ),
-            "filename": audio.filename,
-            "content_type": audio.content_type,
-            "original_size_bytes": len(
-                audio_content
-            ),
-            "cleaned_size_bytes": (
-                cleaned_path.stat().st_size
-            ),
+            "transcription": transcription,
         }
 
 
