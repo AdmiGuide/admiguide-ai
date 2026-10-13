@@ -52,7 +52,7 @@ async def transcribe_audio(
 
     # Données envoyées à l'API Groq.
     data = {
-        "model": "whisper-large-v3-turbo",
+        "model": settings.transcription_model_name,
         "language": "fr",
         "response_format": "json",
         "temperature": "0",

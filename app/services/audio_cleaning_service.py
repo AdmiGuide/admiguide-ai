@@ -70,18 +70,16 @@ def clean_audio(
         "ffmpeg",
         "-y",
 
-        # Fichier audio original à traiter.
         "-i",
         str(input_path),
 
-        # Réduction du bruit et suppression prudente
-        # des silences en début et fin d'enregistrement.
+        # Supprime uniquement les silences prolongés
+        # au début et à la fin de l'enregistrement.
         "-af",
         (
-            "afftdn,"
             "silenceremove="
             "start_periods=1:"
-            "start_duration=0.1:"
+            "start_duration=0.2:"
             "start_threshold=-55dB:"
             "start_silence=0.2:"
             "stop_periods=1:"
@@ -90,13 +88,12 @@ def clean_audio(
             "stop_silence=0.2"
         ),
 
-        # Format adapté à la transcription vocale.
+        # Conversion adaptée à la transcription vocale.
         "-ac",
         "1",
         "-ar",
         "16000",
 
-        # Fichier WAV nettoyé produit par FFmpeg.
         str(output_path),
     ]
 

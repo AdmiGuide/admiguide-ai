@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     # Modèle génératif utilisé par AdmiGuide.
     llm_model_name: str = "openai/gpt-oss-120b"
 
+    # Modèle utilisé pour transcrire les enregistrements vocaux.
+    transcription_model_name: str = "whisper-large-v3-turbo"
+    
     # Adresse de base de l'API Groq.
     groq_base_url: str = "https://api.groq.com/openai/v1"
 

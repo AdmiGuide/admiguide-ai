@@ -72,37 +72,13 @@ async def transcribe_audio(
     audio: UploadFile = File(...),
 ):
     """
-    Reçoit l'enregistrement vocal envoyé par le frontend.
+    Reçoit un enregistrement vocal, le nettoie avec FFmpeg,
+    puis retourne sa transcription en texte.
 
-    À cette étape, l'endpoint réalise les traitements suivants :
-
-    1. vérifie que le fichier reçu est bien un fichier audio ;
-    2. vérifie que le fichier n'est pas vide ;
-    3. enregistre temporairement l'audio original ;
-    4. crée un emplacement pour la version nettoyée ;
-    5. appelle FFmpeg via le service clean_audio() ;
-    6. supprime les fichiers temporaires après traitement.
-
-    Le nettoyage permet notamment :
-    - d'atténuer certains bruits de fond ;
-    - de supprimer les silences prolongés ;
-    - de convertir l'audio en mono ;
-    - de convertir sa fréquence en 16 kHz.
-
-    Après le nettoyage, le fichier WAV est envoyé
-    au service de transcription afin de convertir
-    la voix de l'utilisateur en texte.
+    Les fichiers temporaires sont supprimés après traitement.
     """
 
-    # ======================================================
-    # 1. VÉRIFICATION DU TYPE DE FICHIER
-    # ======================================================
-
-    # Le navigateur peut produire différents formats audio
-    # selon la plateforme : WebM, MP3, etc.
-    #
-    # On accepte donc tout fichier dont le type MIME
-    # commence par "audio/".
+    # Vérifie que le fichier reçu est bien un fichier audio.
     if (
         not audio.content_type
         or not audio.content_type.startswith("audio/")
@@ -112,90 +88,45 @@ async def transcribe_audio(
             detail="Le fichier envoyé doit être un fichier audio.",
         )
 
-
-    # ======================================================
-    # 2. LECTURE DE L'AUDIO
-    # ======================================================
-
-    # Récupère en mémoire les octets du fichier
-    # envoyé par Angular ou Swagger.
     audio_content = await audio.read()
 
-
-    # Un fichier sans contenu ne doit pas être envoyé
-    # à FFmpeg.
     if not audio_content:
         raise HTTPException(
             status_code=400,
             detail="Le fichier audio est vide.",
         )
 
+    # Limite aussi la taille côté microservice IA.
+    max_size = 10 * 1024 * 1024
 
-    # ======================================================
-    # 3. RÉCUPÉRATION DE L'EXTENSION
-    # ======================================================
-    #
-    # Si aucun nom n'est fourni, WebM est utilisé
-    # par défaut car MediaRecorder produit actuellement
-    # ce format dans notre frontend.
+    if len(audio_content) > max_size:
+        raise HTTPException(
+            status_code=400,
+            detail="Le fichier audio est trop volumineux.",
+        )
+
+    # Conserve l'extension du fichier original.
     suffix = Path(
         audio.filename or "audio.webm"
     ).suffix or ".webm"
 
-
-    # Chemin du fichier audio original temporaire.
     temporary_path: Path | None = None
-
-    # Chemin du futur fichier WAV nettoyé.
     cleaned_path: Path | None = None
-
 
     try:
 
-        # ==================================================
-        # 4. ENREGISTREMENT TEMPORAIRE DE L'AUDIO ORIGINAL
-        # ==================================================
-
-        # NamedTemporaryFile crée un véritable fichier
-        # temporaire sur le disque.
-        #
-        # delete=False est utilisé car FFmpeg devra
-        # accéder au fichier après la fermeture du bloc.
+        # Enregistre temporairement l'audio original.
         with tempfile.NamedTemporaryFile(
             suffix=suffix,
             delete=False,
         ) as temporary_file:
 
-            # Écrit dans le fichier temporaire
-            # exactement les données audio reçues.
-            temporary_file.write(
-                audio_content
-            )
-
-            # Conserve le chemin du fichier.
+            temporary_file.write(audio_content)
             temporary_path = Path(
                 temporary_file.name
             )
 
-        # IMPORTANT :
-        #
-        # Nous sommes maintenant sortis du "with".
-        # temporary_file est donc fermé.
-        #
-        # Sous Windows, cette étape est importante :
-        # FFmpeg peut maintenant ouvrir correctement
-        # le fichier temporaire.
-
-
-        # ==================================================
-        # 5. PRÉPARATION DU FICHIER AUDIO NETTOYÉ
-        # ==================================================
-
-        # Crée un emplacement temporaire avec
-        # l'extension .wav.
-        #
-        # FFmpeg écrira ensuite le résultat nettoyé
-        # dans ce fichier.
+        # Prépare le fichier WAV produit par FFmpeg.
         with tempfile.NamedTemporaryFile(
             suffix=".wav",
             delete=False,
@@ -205,29 +136,13 @@ async def transcribe_audio(
                 cleaned_file.name
             )
 
-        # Ici aussi, le fichier est fermé avant
-        # son utilisation par FFmpeg.
-
-
-        # ==================================================
-        # 6. NETTOYAGE AVEC FFMPEG
-        # ==================================================
-
         try:
-
             clean_audio(
                 input_path=temporary_path,
                 output_path=cleaned_path,
             )
 
         except AudioCleaningError as exc:
-
-            # L'utilisateur ne reçoit pas les détails
-            # techniques internes de FFmpeg.
-            #
-            # Pendant le développement, les détails sont
-            # affichés dans le terminal par notre service
-            # audio_cleaning_service.py.
             raise HTTPException(
                 status_code=500,
                 detail=(
@@ -236,20 +151,12 @@ async def transcribe_audio(
                 ),
             ) from exc
 
-        # ==================================================
-        # 7. TRANSCRIPTION DE L'AUDIO NETTOYÉ
-        # ==================================================
-
         try:
-
-            # Envoie le fichier WAV nettoyé à Whisper
-            # via l'API Groq et récupère le texte reconnu.
             transcription = await transcribe_audio_file(
                 audio_path=cleaned_path,
             )
 
         except TranscriptionError as exc:
-
             raise HTTPException(
                 status_code=503,
                 detail=(
@@ -258,48 +165,26 @@ async def transcribe_audio(
                 ),
             ) from exc
 
-
-        # ==================================================
-        # 7. RÉSULTAT DU TEST
-        # ==================================================
-
-        # Pour le moment, aucune transcription n'est encore
-        # effectuée.
-        #
-        # On retourne simplement les tailles des fichiers
-        # pour vérifier que FFmpeg a bien généré
-        # une nouvelle version de l'audio.
         return {
-            "message": (
-                "Audio transcrit correctement."
-            ),
+            "message": "Audio transcrit correctement.",
             "transcription": transcription,
         }
 
-
     finally:
 
-        # ==================================================
-        # 8. NETTOYAGE DES FICHIERS TEMPORAIRES
-        # ==================================================
-
-        # Supprime l'enregistrement original.
+        # Les fichiers vocaux ne sont pas conservés.
         if (
             temporary_path is not None
             and temporary_path.exists()
         ):
             temporary_path.unlink()
 
-
-        # Supprime également la version WAV nettoyée.
         if (
             cleaned_path is not None
             and cleaned_path.exists()
         ):
             cleaned_path.unlink()
 
-
-        # Ferme le fichier UploadFile géré par FastAPI.
         await audio.close()
 
 

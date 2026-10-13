@@ -4,6 +4,13 @@ FROM python:3.12-slim
 # Dossier de travail de l'application.
 WORKDIR /app
 
+# Installe FFmpeg pour le nettoyage
+# des enregistrements vocaux.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+    
 # Installe PyTorch en version CPU uniquement.
 RUN pip install \
     --no-cache-dir \
