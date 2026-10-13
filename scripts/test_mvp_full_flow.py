@@ -1,14 +1,29 @@
 """
-Test ciblé du domaine FONCIER.
+Tests de non-régression du parcours d'orientation AdmiGuide.
 
-Ce script vérifie :
-- la régularisation par voie de bail ;
-- l'acquisition d'un bien déjà sous titre foncier ;
-- une situation foncière trop vague ;
-- une transformation de bail en titre foncier,
-  qui n'est pas couverte par les sources du MVP.
+Ce script vérifie les domaines actuellement couverts par le MVP :
 
-À lancer :
+- PASSEPORT
+  - première demande ;
+  - renouvellement ;
+  - perte ou vol ;
+  - intention trop vague ;
+  - pays émetteur du passeport non précisé.
+
+- PENSIONS / DÉCÈS
+  - fonctionnaire décédé en activité ;
+  - fonctionnaire décédé après la retraite ;
+  - situation du défunt à préciser ;
+  - parcours après une réponse "Je ne sais pas".
+
+- FONCIER
+  - régularisation par voie de bail ;
+  - acquisition d'un bien sous titre foncier ;
+  - intention foncière à préciser ;
+  - transformation de bail en titre foncier non couverte.
+
+À lancer depuis la racine de admiguide-ai :
+
     python -m scripts.test_mvp_full_flow
 """
 
@@ -19,37 +34,240 @@ import sys
 from pathlib import Path
 
 
+# ==========================================================
+# CONFIGURATION DU PROJET
+# ==========================================================
+
 ROOT_DIR = Path(__file__).resolve().parents[1]
+
 os.chdir(ROOT_DIR)
-sys.path.insert(0, str(ROOT_DIR))
 
-from app.services.orientation_service import get_orientation_service
+sys.path.insert(
+    0,
+    str(ROOT_DIR),
+)
 
 
-# Codes autorisés pour le domaine FONCIER.
+from app.services.orientation_service import (
+    get_orientation_service,
+)
+
+
+# ==========================================================
+# CODES DU MVP
+# ==========================================================
+
 MVP_DEMARCHE_CODES = [
+    # Passeport.
+    "DEMANDE_PASSEPORT_ORDINAIRE",
+    "RENOUVELLEMENT_PASSEPORT",
+    "PASSEPORT_PERDU_OU_VOLE",
+
+    # Pensions / décès.
+    "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
+    "REVERSION_PENSION_APRES_RETRAITE",
+
+    # Foncier.
     "REGULARISATION_BAIL",
     "ACQUISITION_MUTATION_TITRE_FONCIER",
 ]
 
 
+# Pause entre deux appels afin de limiter
+# les erreurs 429 liées au quota Groq.
+DELAI_ENTRE_TESTS = 20
+
+
+# ==========================================================
+# CAS DE TEST
+# ==========================================================
+
 TESTS = [
+
+    # ------------------------------------------------------
+    # PASSEPORT
+    # ------------------------------------------------------
+
     {
-        "nom": "Régularisation par voie de bail",
+        "nom": "Passeport - Première demande",
         "situation": (
-            "J'occupe un terrain qui dépend du domaine privé de l'État "
-            "et je souhaite obtenir un bail pour régulariser ma situation."
+            "Je vis à Dakar et je souhaite demander "
+            "un passeport sénégalais pour la première fois."
+        ),
+        "reponses": [],
+        "statut_attendu": "ORIENTATION",
+        "code_attendu": "DEMANDE_PASSEPORT_ORDINAIRE",
+    },
+
+    {
+        "nom": "Passeport - Renouvellement",
+        "situation": (
+            "Mon passeport sénégalais est expiré "
+            "et je souhaite le renouveler à Dakar."
+        ),
+        "reponses": [],
+        "statut_attendu": "ORIENTATION",
+        "code_attendu": "RENOUVELLEMENT_PASSEPORT",
+    },
+
+    {
+        "nom": "Passeport - Perte",
+        "situation": (
+            "J'ai perdu mon passeport sénégalais "
+            "à Dakar et je souhaite le refaire."
+        ),
+        "reponses": [],
+        "statut_attendu": "ORIENTATION",
+        "code_attendu": "PASSEPORT_PERDU_OU_VOLE",
+    },
+
+    {
+        "nom": "Passeport - Intention à préciser",
+        "situation": (
+            "Je réside à Dakar et je souhaite faire "
+            "des démarches pour mon passeport sénégalais."
+        ),
+        "reponses": [],
+        "statut_attendu": "PRECISIONS_REQUISES",
+        "question_attendue": (
+            "Quelle est votre situation concernant "
+            "votre passeport sénégalais ?"
+        ),
+        "options_attendues": [
+            (
+                "Je souhaite demander un passeport "
+                "pour la première fois"
+            ),
+            "Je souhaite renouveler mon passeport",
+            "J'ai perdu ou on m'a volé mon passeport",
+            "Autre situation",
+        ],
+    },
+
+    {
+        "nom": "Passeport - Pays émetteur inconnu",
+        "situation": (
+            "J'ai perdu mon passeport "
+            "et je vis à Dakar."
+        ),
+        "reponses": [],
+        "statut_attendu": "PRECISIONS_REQUISES",
+        "question_attendue": (
+            "S'agit-il d'un passeport sénégalais ?"
+        ),
+        "options_attendues": [
+            "Oui",
+            "Non",
+            "Je ne sais pas",
+        ],
+    },
+
+
+    # ------------------------------------------------------
+    # PENSIONS / DÉCÈS
+    # ------------------------------------------------------
+
+    {
+        "nom": "Décès - Fonctionnaire en activité",
+        "situation": (
+            "Un membre de ma famille est décédé. "
+            "Il était fonctionnaire en activité "
+            "au moment de son décès."
+        ),
+        "reponses": [],
+        "statut_attendu": "ORIENTATION",
+        "code_attendu": (
+            "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE"
+        ),
+    },
+
+    {
+        "nom": "Décès - Fonctionnaire à la retraite",
+        "situation": (
+            "Un membre de ma famille est décédé. "
+            "Il était fonctionnaire à la retraite "
+            "au moment de son décès."
+        ),
+        "reponses": [],
+        "statut_attendu": "ORIENTATION",
+        "code_attendu": (
+            "REVERSION_PENSION_APRES_RETRAITE"
+        ),
+    },
+
+    {
+        "nom": "Décès - Situation à préciser",
+        "situation": (
+            "Un membre de ma famille est décédé "
+            "et je souhaite connaître les démarches "
+            "pour les ayants droit."
+        ),
+        "reponses": [],
+        "statut_attendu": "PRECISIONS_REQUISES",
+        "question_attendue": (
+            "Au moment de son décès, quelle était "
+            "la situation de la personne ?"
+        ),
+        "options_attendues": [
+            "Elle était fonctionnaire en activité",
+            "Elle était fonctionnaire à la retraite",
+            "Elle n'était pas fonctionnaire",
+            "Je ne sais pas",
+        ],
+    },
+
+    {
+        "nom": "Décès - Je ne sais pas",
+        "situation": (
+            "Un membre de ma famille est décédé "
+            "et je souhaite connaître les démarches "
+            "pour les ayants droit."
+        ),
+        "reponses": [
+            {
+                "texte_question": (
+                    "Au moment de son décès, quelle était "
+                    "la situation de la personne ?"
+                ),
+                "contenu": "Je ne sais pas",
+            }
+        ],
+        "statut_attendu": "PRECISIONS_REQUISES",
+        "question_attendue": (
+            "Au moment de son décès, la personne "
+            "percevait-elle déjà une pension de retraite ?"
+        ),
+        "options_attendues": [
+            "Oui",
+            "Non",
+            "Je ne sais pas",
+        ],
+    },
+
+
+    # ------------------------------------------------------
+    # FONCIER
+    # ------------------------------------------------------
+
+    {
+        "nom": "Foncier - Régularisation par bail",
+        "situation": (
+            "J'occupe un terrain qui dépend du domaine "
+            "privé de l'État et je souhaite obtenir "
+            "un bail pour régulariser ma situation."
         ),
         "reponses": [],
         "statut_attendu": "ORIENTATION",
         "code_attendu": "REGULARISATION_BAIL",
     },
+
     {
-        "nom": "Acquisition d'un bien sous titre foncier",
+        "nom": "Foncier - Acquisition sous titre foncier",
         "situation": (
-            "Je souhaite acheter un terrain appartenant à un particulier. "
-            "Le terrain possède déjà un titre foncier et je veux que "
-            "le bien soit inscrit à mon nom après l'achat."
+            "Je souhaite acheter un terrain appartenant "
+            "à un particulier. Le terrain possède déjà "
+            "un titre foncier et je souhaite que le bien "
+            "soit inscrit à mon nom après l'achat."
         ),
         "reponses": [],
         "statut_attendu": "ORIENTATION",
@@ -57,23 +275,36 @@ TESTS = [
             "ACQUISITION_MUTATION_TITRE_FONCIER"
         ),
     },
+
     {
-        "nom": "Situation foncière à préciser",
+        "nom": "Foncier - Intention à préciser",
         "situation": (
-            "J'ai un terrain au Sénégal et je souhaite "
-            "régulariser ma situation."
+            "J'ai un terrain au Sénégal "
+            "et je souhaite régulariser ma situation."
         ),
         "reponses": [],
         "statut_attendu": "PRECISIONS_REQUISES",
         "question_attendue": (
-            "Que souhaitez-vous faire concernant ce terrain ou ce bien ?"
+            "Que souhaitez-vous faire concernant "
+            "ce terrain ou ce bien ?"
         ),
+        "options_attendues": [
+            "Obtenir un bail pour un terrain",
+            (
+                "Acheter un bien qui possède déjà "
+                "un titre foncier"
+            ),
+            "Autre situation",
+            "Je ne sais pas",
+        ],
     },
+
     {
-        "nom": "Transformation bail en titre foncier non couverte",
+        "nom": "Foncier - Transformation bail non couverte",
         "situation": (
-            "J'ai déjà un bail sur mon terrain et je souhaite "
-            "le transformer en titre foncier."
+            "J'ai déjà un bail sur mon terrain "
+            "et je souhaite le transformer "
+            "en titre foncier."
         ),
         "reponses": [],
         "statut_attendu": "SOURCES_INSUFFISANTES",
@@ -81,145 +312,284 @@ TESTS = [
 ]
 
 
-async def main() -> None:
-    service = get_orientation_service()
-    resultats = []
+# ==========================================================
+# VÉRIFICATION D'UN RÉSULTAT
+# ==========================================================
 
-    print("\nTEST DU DOMAINE FONCIER\n")
+def verifier_resultat(
+    test: dict,
+    data: dict,
+) -> tuple[bool, dict]:
 
-    for index, test in enumerate(TESTS):
-        try:
-            resultat = await service.analyze(
-                situation=test["situation"],
-                demarche_codes=MVP_DEMARCHE_CODES,
-                reponses=test["reponses"],
+    statut_recu = data.get(
+        "statut"
+    )
+
+    statut_attendu = test[
+        "statut_attendu"
+    ]
+
+    details = {
+        "statut_recu": statut_recu,
+        "statut_attendu": statut_attendu,
+    }
+
+
+    # ------------------------------------------------------
+    # ORIENTATION
+    # ------------------------------------------------------
+
+    if statut_attendu == "ORIENTATION":
+
+        code_recu = data.get(
+            "demarche_code"
+        )
+
+        code_attendu = test[
+            "code_attendu"
+        ]
+
+        details[
+            "demarche_code_recu"
+        ] = code_recu
+
+        details[
+            "demarche_code_attendu"
+        ] = code_attendu
+
+        ok = (
+            statut_recu == "ORIENTATION"
+            and code_recu == code_attendu
+        )
+
+        return ok, details
+
+
+    # ------------------------------------------------------
+    # PRECISIONS_REQUISES
+    # ------------------------------------------------------
+
+    if (
+        statut_attendu
+        == "PRECISIONS_REQUISES"
+    ):
+
+        questions = data.get(
+            "questions",
+            [],
+        )
+
+        question_attendue = test[
+            "question_attendue"
+        ]
+
+        options_attendues = test.get(
+            "options_attendues"
+        )
+
+        question_trouvee = None
+
+        for question in questions:
+
+            if (
+                question.get("texte")
+                == question_attendue
+            ):
+                question_trouvee = question
+                break
+
+        details[
+            "question_attendue"
+        ] = question_attendue
+
+        details[
+            "questions_recues"
+        ] = [
+            question.get("texte")
+            for question in questions
+        ]
+
+        if question_trouvee:
+
+            details[
+                "options_recues"
+            ] = question_trouvee.get(
+                "options",
+                [],
             )
 
-            data = resultat.model_dump()
+        ok = (
+            statut_recu
+            == "PRECISIONS_REQUISES"
+            and question_trouvee
+            is not None
+        )
 
-            statut_recu = data.get("statut")
-            statut_attendu = test["statut_attendu"]
+        # Vérifie aussi les options lorsque
+        # le test en attend explicitement.
+        if (
+            ok
+            and options_attendues
+            is not None
+        ):
 
-            # -------------------------------------------------
-            # Cas ORIENTATION
-            # -------------------------------------------------
-            if statut_attendu == "ORIENTATION":
-                code_recu = data.get("demarche_code")
-                code_attendu = test["code_attendu"]
-
-                ok = (
-                    statut_recu == "ORIENTATION"
-                    and code_recu == code_attendu
+            ok = (
+                question_trouvee.get(
+                    "options",
+                    [],
                 )
+                == options_attendues
+            )
 
-                item = {
-                    "nom": test["nom"],
-                    "statut_recu": statut_recu,
-                    "statut_attendu": statut_attendu,
-                    "demarche_code_recu": code_recu,
-                    "demarche_code_attendu": code_attendu,
-                    "verdict": (
-                        "OK"
-                        if ok
-                        else "A_VERIFIER"
+        return ok, details
+
+
+    # ------------------------------------------------------
+    # SOURCES_INSUFFISANTES
+    # ------------------------------------------------------
+
+    if (
+        statut_attendu
+        == "SOURCES_INSUFFISANTES"
+    ):
+
+        details[
+            "message_recu"
+        ] = data.get(
+            "message"
+        )
+
+        ok = (
+            statut_recu
+            == "SOURCES_INSUFFISANTES"
+        )
+
+        return ok, details
+
+
+    return False, details
+
+
+# ==========================================================
+# EXÉCUTION DES TESTS
+# ==========================================================
+
+async def main() -> None:
+
+    service = (
+        get_orientation_service()
+    )
+
+    resultats = []
+
+    total = len(TESTS)
+
+    print(
+        "\nTESTS DE NON-RÉGRESSION ADMIGUIDE"
+    )
+
+    print(
+        f"{total} cas à exécuter.\n"
+    )
+
+
+    for index, test in enumerate(
+        TESTS,
+        start=1,
+    ):
+
+        print("=" * 72)
+
+        print(
+            f"[{index}/{total}] "
+            f"{test['nom'].upper()}"
+        )
+
+        print("=" * 72)
+
+
+        try:
+
+            resultat = (
+                await service.analyze(
+                    situation=(
+                        test["situation"]
                     ),
-                    "resultat_complet": data,
-                }
-
-            # -------------------------------------------------
-            # Cas PRECISIONS_REQUISES
-            # -------------------------------------------------
-            elif statut_attendu == "PRECISIONS_REQUISES":
-                questions = data.get("questions", [])
-
-                textes_questions = [
-                    question.get("texte", "")
-                    for question in questions
-                ]
-
-                question_attendue = test[
-                    "question_attendue"
-                ]
-
-                ok = (
-                    statut_recu
-                    == "PRECISIONS_REQUISES"
-                    and question_attendue
-                    in textes_questions
+                    demarche_codes=(
+                        MVP_DEMARCHE_CODES
+                    ),
+                    reponses=(
+                        test["reponses"]
+                    ),
                 )
+            )
 
-                item = {
-                    "nom": test["nom"],
-                    "statut_recu": statut_recu,
-                    "statut_attendu": statut_attendu,
-                    "question_attendue": (
-                        question_attendue
-                    ),
-                    "questions_recues": (
-                        textes_questions
-                    ),
-                    "verdict": (
-                        "OK"
-                        if ok
-                        else "A_VERIFIER"
-                    ),
-                    "resultat_complet": data,
-                }
+            data = (
+                resultat.model_dump()
+            )
 
-            # -------------------------------------------------
-            # Cas SOURCES_INSUFFISANTES
-            # -------------------------------------------------
-            else:
-                ok = (
-                    statut_recu
-                    == "SOURCES_INSUFFISANTES"
+            ok, details = (
+                verifier_resultat(
+                    test,
+                    data,
                 )
+            )
 
-                item = {
-                    "nom": test["nom"],
-                    "statut_recu": statut_recu,
-                    "statut_attendu": statut_attendu,
-                    "message_recu": data.get(
-                        "message"
-                    ),
-                    "verdict": (
-                        "OK"
-                        if ok
-                        else "A_VERIFIER"
-                    ),
-                    "resultat_complet": data,
-                }
+            item = {
+                "nom": test["nom"],
+                **details,
+                "verdict": (
+                    "OK"
+                    if ok
+                    else "A_VERIFIER"
+                ),
+                "resultat_complet": data,
+            }
+
 
         except Exception as exc:
+
             item = {
                 "nom": test["nom"],
                 "statut_recu": None,
                 "statut_attendu": (
-                    test["statut_attendu"]
+                    test[
+                        "statut_attendu"
+                    ]
                 ),
                 "verdict": "ERREUR",
                 "erreur": (
-                    f"{type(exc).__name__}: {exc}"
+                    f"{type(exc).__name__}: "
+                    f"{exc}"
                 ),
             }
 
-        resultats.append(item)
 
-        print("=" * 70)
-        print(test["nom"].upper())
-        print("=" * 70)
+        resultats.append(
+            item
+        )
+
 
         print(
             "Statut reçu :",
-            item.get("statut_recu"),
+            item.get(
+                "statut_recu"
+            ),
         )
 
         print(
             "Statut attendu :",
-            item.get("statut_attendu"),
+            item.get(
+                "statut_attendu"
+            ),
         )
 
-        if test["statut_attendu"] == "ORIENTATION":
+
+        if (
+            test["statut_attendu"]
+            == "ORIENTATION"
+        ):
+
             print(
                 "Code reçu :",
                 item.get(
@@ -234,10 +604,12 @@ async def main() -> None:
                 ),
             )
 
+
         elif (
             test["statut_attendu"]
             == "PRECISIONS_REQUISES"
         ):
+
             print(
                 "Questions reçues :",
                 item.get(
@@ -252,20 +624,70 @@ async def main() -> None:
                 ),
             )
 
-        else:
+            if (
+                "options_attendues"
+                in test
+            ):
+
+                print(
+                    "Options reçues :",
+                    item.get(
+                        "options_recues"
+                    ),
+                )
+
+                print(
+                    "Options attendues :",
+                    test[
+                        "options_attendues"
+                    ],
+                )
+
+
+        elif (
+            test["statut_attendu"]
+            == "SOURCES_INSUFFISANTES"
+        ):
+
             print(
                 "Message reçu :",
-                item.get("message_recu"),
+                item.get(
+                    "message_recu"
+                ),
             )
+
+
+        if item.get("erreur"):
+
+            print(
+                "Erreur :",
+                item["erreur"],
+            )
+
 
         print(
             "Verdict :",
             item["verdict"],
         )
 
-        # Pause pour limiter les erreurs HTTP 429 de Groq.
-        if index < len(TESTS) - 1:
-            await asyncio.sleep(15)
+
+        # Laisse le quota Groq se libérer
+        # avant le prochain test.
+        if index < total:
+
+            print(
+                f"\nPause de "
+                f"{DELAI_ENTRE_TESTS} secondes..."
+            )
+
+            await asyncio.sleep(
+                DELAI_ENTRE_TESTS
+            )
+
+
+    # ======================================================
+    # ENREGISTREMENT DU RAPPORT JSON
+    # ======================================================
 
     fichier = (
         ROOT_DIR
@@ -282,11 +704,65 @@ async def main() -> None:
         encoding="utf-8",
     )
 
-    print("\nRésultats détaillés :")
+
+    # ======================================================
+    # RÉSUMÉ
+    # ======================================================
+
+    nombre_ok = sum(
+        1
+        for resultat in resultats
+        if resultat["verdict"] == "OK"
+    )
+
+    nombre_a_verifier = sum(
+        1
+        for resultat in resultats
+        if resultat["verdict"]
+        == "A_VERIFIER"
+    )
+
+    nombre_erreurs = sum(
+        1
+        for resultat in resultats
+        if resultat["verdict"]
+        == "ERREUR"
+    )
+
+
+    print("\n" + "=" * 72)
+
     print(
-        "scripts/test_mvp_full_flow_results.json"
+        "RÉSUMÉ DES TESTS"
+    )
+
+    print("=" * 72)
+
+    print(
+        f"OK : {nombre_ok}/{total}"
+    )
+
+    print(
+        "À vérifier :",
+        nombre_a_verifier,
+    )
+
+    print(
+        "Erreurs :",
+        nombre_erreurs,
+    )
+
+    print(
+        "\nRésultats détaillés :"
+    )
+
+    print(
+        "scripts/"
+        "test_mvp_full_flow_results.json"
     )
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(
+        main()
+    )

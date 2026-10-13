@@ -1,6 +1,196 @@
 [
   {
-    "nom": "Régularisation par voie de bail",
+    "nom": "Passeport - Première demande",
+    "statut_recu": "ORIENTATION",
+    "statut_attendu": "ORIENTATION",
+    "demarche_code_recu": "DEMANDE_PASSEPORT_ORDINAIRE",
+    "demarche_code_attendu": "DEMANDE_PASSEPORT_ORDINAIRE",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "DEMANDE_PASSEPORT_ORDINAIRE",
+      "resume": "L'utilisateur réside à Dakar et souhaite demander un passeport sénégalais pour la première fois.",
+      "avertissement": ""
+    }
+  },
+  {
+    "nom": "Passeport - Renouvellement",
+    "statut_recu": "ORIENTATION",
+    "statut_attendu": "ORIENTATION",
+    "demarche_code_recu": "RENOUVELLEMENT_PASSEPORT",
+    "demarche_code_attendu": "RENOUVELLEMENT_PASSEPORT",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "RENOUVELLEMENT_PASSEPORT",
+      "resume": "Passeport sénégalais expiré, souhait de le renouveler à Dakar.",
+      "avertissement": ""
+    }
+  },
+  {
+    "nom": "Passeport - Perte",
+    "statut_recu": "ORIENTATION",
+    "statut_attendu": "ORIENTATION",
+    "demarche_code_recu": "PASSEPORT_PERDU_OU_VOLE",
+    "demarche_code_attendu": "PASSEPORT_PERDU_OU_VOLE",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "PASSEPORT_PERDU_OU_VOLE",
+      "resume": "L'utilisateur a perdu son passeport sénégalais à Dakar et souhaite le refaire.",
+      "avertissement": ""
+    }
+  },
+  {
+    "nom": "Passeport - Intention à préciser",
+    "statut_recu": "PRECISIONS_REQUISES",
+    "statut_attendu": "PRECISIONS_REQUISES",
+    "question_attendue": "Quelle est votre situation concernant votre passeport sénégalais ?",
+    "questions_recues": [
+      "Quelle est votre situation concernant votre passeport sénégalais ?"
+    ],
+    "options_recues": [
+      "Je souhaite demander un passeport pour la première fois",
+      "Je souhaite renouveler mon passeport",
+      "J'ai perdu ou on m'a volé mon passeport",
+      "Autre situation"
+    ],
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "PRECISIONS_REQUISES",
+      "questions": [
+        {
+          "texte": "Quelle est votre situation concernant votre passeport sénégalais ?",
+          "type_question": "CHOIX_UNIQUE",
+          "options": [
+            "Je souhaite demander un passeport pour la première fois",
+            "Je souhaite renouveler mon passeport",
+            "J'ai perdu ou on m'a volé mon passeport",
+            "Autre situation"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Passeport - Pays émetteur inconnu",
+    "statut_recu": "PRECISIONS_REQUISES",
+    "statut_attendu": "PRECISIONS_REQUISES",
+    "question_attendue": "S'agit-il d'un passeport sénégalais ?",
+    "questions_recues": [
+      "S'agit-il d'un passeport sénégalais ?"
+    ],
+    "options_recues": [
+      "Oui",
+      "Non",
+      "Je ne sais pas"
+    ],
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "PRECISIONS_REQUISES",
+      "questions": [
+        {
+          "texte": "S'agit-il d'un passeport sénégalais ?",
+          "type_question": "CHOIX_UNIQUE",
+          "options": [
+            "Oui",
+            "Non",
+            "Je ne sais pas"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Décès - Fonctionnaire en activité",
+    "statut_recu": "ORIENTATION",
+    "statut_attendu": "ORIENTATION",
+    "demarche_code_recu": "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
+    "demarche_code_attendu": "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
+      "resume": "Le défunt était fonctionnaire en activité au moment de son décès.",
+      "avertissement": ""
+    }
+  },
+  {
+    "nom": "Décès - Fonctionnaire à la retraite",
+    "statut_recu": "ORIENTATION",
+    "statut_attendu": "ORIENTATION",
+    "demarche_code_recu": "REVERSION_PENSION_APRES_RETRAITE",
+    "demarche_code_attendu": "REVERSION_PENSION_APRES_RETRAITE",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "REVERSION_PENSION_APRES_RETRAITE",
+      "resume": "Le défunt était fonctionnaire à la retraite au moment de son décès.",
+      "avertissement": ""
+    }
+  },
+  {
+    "nom": "Décès - Situation à préciser",
+    "statut_recu": "PRECISIONS_REQUISES",
+    "statut_attendu": "PRECISIONS_REQUISES",
+    "question_attendue": "Au moment de son décès, quelle était la situation de la personne ?",
+    "questions_recues": [
+      "Au moment de son décès, quelle était la situation de la personne ?"
+    ],
+    "options_recues": [
+      "Elle était fonctionnaire en activité",
+      "Elle était fonctionnaire à la retraite",
+      "Elle n'était pas fonctionnaire",
+      "Je ne sais pas"
+    ],
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "PRECISIONS_REQUISES",
+      "questions": [
+        {
+          "texte": "Au moment de son décès, quelle était la situation de la personne ?",
+          "type_question": "CHOIX_UNIQUE",
+          "options": [
+            "Elle était fonctionnaire en activité",
+            "Elle était fonctionnaire à la retraite",
+            "Elle n'était pas fonctionnaire",
+            "Je ne sais pas"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Décès - Je ne sais pas",
+    "statut_recu": "PRECISIONS_REQUISES",
+    "statut_attendu": "PRECISIONS_REQUISES",
+    "question_attendue": "Au moment de son décès, la personne percevait-elle déjà une pension de retraite ?",
+    "questions_recues": [
+      "Au moment de son décès, la personne percevait-elle déjà une pension de retraite ?"
+    ],
+    "options_recues": [
+      "Oui",
+      "Non",
+      "Je ne sais pas"
+    ],
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "PRECISIONS_REQUISES",
+      "questions": [
+        {
+          "texte": "Au moment de son décès, la personne percevait-elle déjà une pension de retraite ?",
+          "type_question": "CHOIX_UNIQUE",
+          "options": [
+            "Oui",
+            "Non",
+            "Je ne sais pas"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Foncier - Régularisation par bail",
     "statut_recu": "ORIENTATION",
     "statut_attendu": "ORIENTATION",
     "demarche_code_recu": "REGULARISATION_BAIL",
@@ -9,12 +199,12 @@
     "resultat_complet": {
       "statut": "ORIENTATION",
       "demarche_code": "REGULARISATION_BAIL",
-      "resume": "L'utilisateur occupe un terrain dépendant du domaine privé de l'État et souhaite obtenir un bail pour régulariser sa situation.",
+      "resume": "L'utilisateur occupe un terrain relevant du domaine privé de l'État et souhaite obtenir un bail pour régulariser sa situation.",
       "avertissement": ""
     }
   },
   {
-    "nom": "Acquisition d'un bien sous titre foncier",
+    "nom": "Foncier - Acquisition sous titre foncier",
     "statut_recu": "ORIENTATION",
     "statut_attendu": "ORIENTATION",
     "demarche_code_recu": "ACQUISITION_MUTATION_TITRE_FONCIER",
@@ -23,17 +213,23 @@
     "resultat_complet": {
       "statut": "ORIENTATION",
       "demarche_code": "ACQUISITION_MUTATION_TITRE_FONCIER",
-      "resume": "L'utilisateur souhaite acheter un terrain appartenant à un particulier, déjà doté d'un titre foncier, et faire inscrire le bien à son nom après l'achat.",
+      "resume": "L'utilisateur souhaite acheter un terrain appartenant à un particulier, déjà doté d'un titre foncier, et veut que le bien soit inscrit à son nom.",
       "avertissement": ""
     }
   },
   {
-    "nom": "Situation foncière à préciser",
+    "nom": "Foncier - Intention à préciser",
     "statut_recu": "PRECISIONS_REQUISES",
     "statut_attendu": "PRECISIONS_REQUISES",
     "question_attendue": "Que souhaitez-vous faire concernant ce terrain ou ce bien ?",
     "questions_recues": [
       "Que souhaitez-vous faire concernant ce terrain ou ce bien ?"
+    ],
+    "options_recues": [
+      "Obtenir un bail pour un terrain",
+      "Acheter un bien qui possède déjà un titre foncier",
+      "Autre situation",
+      "Je ne sais pas"
     ],
     "verdict": "OK",
     "resultat_complet": {
@@ -53,14 +249,14 @@
     }
   },
   {
-    "nom": "Transformation bail en titre foncier non couverte",
+    "nom": "Foncier - Transformation bail non couverte",
     "statut_recu": "SOURCES_INSUFFISANTES",
     "statut_attendu": "SOURCES_INSUFFISANTES",
-    "message_recu": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles (REGULARISATION_BAIL ou ACQUISITION_MUTATION_TITRE_FONCIER).",
+    "message_recu": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles.",
     "verdict": "OK",
     "resultat_complet": {
       "statut": "SOURCES_INSUFFISANTES",
-      "message": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles (REGULARISATION_BAIL ou ACQUISITION_MUTATION_TITRE_FONCIER)."
+      "message": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles."
     }
   }
 ]

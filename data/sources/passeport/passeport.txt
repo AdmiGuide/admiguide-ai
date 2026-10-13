@@ -1,33 +1,433 @@
 === SOURCE ===
-ID: PASSEPORT_SENEGAL_INTERIEUR
-TITRE: Passeport au Sénégal - Ministère de l'Intérieur et de la Sécurité publique
+ID: PASSEPORT_DAKAR_PREMIERE_DEMANDE_01
+TITRE: Première demande de passeport ordinaire - Sénégal / Dakar
 URL: https://www.interieur.gouv.sn/services/services-aux-usagers/passeport-ordinaire
 TYPE: PAGE_WEB
-DATE_VERIFICATION: 2026-09-13
+DATE_VERIFICATION: 2026-10-13
 PAYS_APPLICATION: SN
 
 CONTENU:
-PASSEPORT - SÉNÉGAL
+Démarche :
+Demander un passeport ordinaire sénégalais.
 
-Première demande
+Portée :
+Cette source constitue la référence principale pour le parcours
+d'un particulier résidant au Sénégal, notamment à Dakar.
 
-Tout citoyen sénégalais peut demander un passeport ordinaire.
+Bénéficiaires :
+Tout citoyen sénégalais peut demander un passeport ordinaire
+dès la naissance.
 
-Pour une demande au Sénégal, les pièces indiquées comprennent notamment :
-- l'original de la carte nationale d'identité ainsi qu'une copie certifiée conforme ;
+Pièces indiquées pour la demande :
+- l'original de la carte nationale d'identité ;
+- une copie certifiée conforme de la carte nationale d'identité ;
 - trois photos d'identité en couleur ;
 - une quittance attestant du paiement des droits.
 
-Le coût indiqué par cette source est de 20 000 FCFA.
+Cas des enfants mineurs :
+Joindre :
+- une autorisation parentale ;
+- une copie certifiée conforme de la carte nationale d'identité
+  du père ou de la mère ;
+- un certificat de prise en charge délivré par la mairie
+  ou la justice.
 
-Au Sénégal, la demande s'effectue auprès du commissariat de police dont relève le domicile du demandeur.
+Coût :
+20 000 FCFA.
 
-Renouvellement
+Paiement :
+La somme est payable auprès de la Direction de l'Enregistrement,
+des Domaines et du Timbre.
 
-Le renouvellement peut être effectué sur présentation de l'ancien passeport et d'une nouvelle quittance de paiement de 20 000 FCFA.
+Délai de délivrance :
+2 semaines.
 
-Perte ou vol
+Les dossiers des élèves, des étudiants et des personnes devant
+faire l'objet d'une évacuation sanitaire sont traités en priorité.
 
-En cas de perte ou de vol, le demandeur doit effectuer une déclaration de perte puis refaire la procédure de demande de passeport.
+Service compétent :
+Le commissariat de police dont relève le domicile du demandeur.
 
-Aucun duplicata du passeport perdu n'est délivré.
+Modalités particulières à Dakar :
+À Dakar, le demandeur se présente au commissariat sur rendez-vous.
+
+Il effectue d'abord le paiement auprès de la Direction
+de l'Enregistrement et du Timbre afin d'obtenir une quittance.
+
+Pour le rendez-vous, la source indique le serveur vocal
+Africatel AVS au 88 628 19 01.
+
+Le numéro de la quittance est demandé lors de la prise
+de rendez-vous.
+
+Le délai d'obtention du rendez-vous dépend de l'affluence
+dans les centres de dépôt et peut varier de 2 à 25 jours.
+
+Attention :
+Le délai d'obtention du rendez-vous, compris entre 2 et 25 jours,
+ne doit pas être confondu avec le délai de délivrance du passeport,
+annoncé à 2 semaines.
+
+
+=== SOURCE ===
+ID: PASSEPORT_DAKAR_RENOUVELLEMENT_01
+TITRE: Renouvellement d'un passeport ordinaire - Sénégal / Dakar
+URL: https://www.interieur.gouv.sn/services/services-aux-usagers/passeport-ordinaire
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-13
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Renouveler un passeport ordinaire sénégalais existant.
+
+Portée :
+Cette source constitue la référence principale pour le renouvellement
+d'un passeport d'un particulier résidant au Sénégal, notamment à Dakar.
+
+Validité :
+La durée de validité indiquée pour un passeport est de 4 ans.
+
+La source indique qu'il est renouvelable une fois.
+
+Pièces indiquées pour le renouvellement :
+- l'ancien passeport ;
+- une nouvelle quittance de paiement de 20 000 FCFA.
+
+Coût :
+20 000 FCFA.
+
+Paiement :
+La somme est payable auprès de la Direction de l'Enregistrement,
+des Domaines et du Timbre.
+
+Délai de délivrance :
+2 semaines.
+
+Service compétent :
+Le commissariat de police dont relève le domicile du demandeur.
+
+Modalités particulières à Dakar :
+À Dakar, le dépôt s'effectue sur rendez-vous.
+
+Le demandeur effectue d'abord le paiement afin d'obtenir
+sa quittance.
+
+Pour obtenir le rendez-vous, la source indique le serveur vocal
+Africatel AVS au 88 628 19 01.
+
+Le numéro de la quittance est demandé lors de la prise
+de rendez-vous.
+
+Le délai d'obtention du rendez-vous dépend de l'affluence
+dans les centres de dépôt et peut varier de 2 à 25 jours.
+
+Attention :
+Le délai de rendez-vous est distinct du délai de délivrance
+du passeport, annoncé à 2 semaines.
+
+
+=== SOURCE ===
+ID: PASSEPORT_DAKAR_PERTE_VOL_01
+TITRE: Passeport sénégalais perdu ou volé - Sénégal / Dakar
+URL: https://www.interieur.gouv.sn/services/services-aux-usagers/passeport-ordinaire
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-13
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Refaire un passeport sénégalais après une perte ou un vol.
+
+Portée :
+Cette source constitue la référence principale pour un particulier
+résidant au Sénégal, notamment à Dakar.
+
+En cas de perte ou de vol :
+Le demandeur doit effectuer une déclaration de perte,
+puis refaire la procédure de demande de passeport.
+
+Aucun duplicata n'est délivré.
+
+Coût général du passeport :
+20 000 FCFA.
+
+Paiement :
+La somme est payable auprès de la Direction de l'Enregistrement,
+des Domaines et du Timbre.
+
+Délai de délivrance indiqué par la source :
+2 semaines.
+
+Service compétent :
+Le commissariat de police dont relève le domicile du demandeur.
+
+Modalités particulières à Dakar :
+À Dakar, le dépôt s'effectue sur rendez-vous après paiement
+et obtention de la quittance.
+
+Pour le rendez-vous, la source indique le serveur vocal
+Africatel AVS au 88 628 19 01.
+
+Le numéro de la quittance est demandé lors de la prise
+de rendez-vous.
+
+Le délai d'obtention du rendez-vous dépend de l'affluence
+dans les centres de dépôt et peut varier de 2 à 25 jours.
+
+Attention :
+Le délai de rendez-vous est distinct du délai de délivrance
+du passeport, annoncé à 2 semaines.
+
+
+=== SOURCE ===
+ID: PASSEPORT_DGSE_PREMIERE_DEMANDE_COMPLEMENT_01
+TITRE: Demande de passeport - informations documentaires complémentaires DGSE
+URL: https://dgse.gouv.sn/content/demande-de-passeport
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-13
+PAYS_APPLICATION: SN
+
+CONTENU:
+Nature de la source :
+Source officielle de la Direction générale des Sénégalais
+de l'Extérieur.
+
+Portée dans AdmiGuide :
+Cette source est utilisée comme complément documentaire.
+
+Pour un particulier résidant à Dakar, elle ne doit pas remplacer
+les modalités territoriales publiées par le Ministère de l'Intérieur.
+
+Les éléments propres à la résidence à l'étranger ne doivent pas
+être présentés automatiquement comme des exigences du parcours Dakar
+lorsqu'ils ne sont pas confirmés par une source applicable à Dakar.
+
+Première demande :
+La DGSE indique notamment les éléments suivants :
+- une carte nationale d'identité numérisée accompagnée,
+  selon le cas, d'un certificat de nationalité,
+  d'une pièce d'identité d'un ascendant au premier degré né au Sénégal
+  ou d'un ancien passeport sénégalais ;
+- un document justificatif pour l'inscription ou la cession
+  du nom marital sur le passeport ;
+- un justificatif de domicile.
+
+Cas des enfants mineurs :
+La DGSE indique également :
+- une autorisation parentale ;
+- une copie certifiée conforme de la carte nationale d'identité
+  du père ou de la mère ;
+- un certificat de prise en charge délivré par la mairie
+  ou la justice.
+
+Cas des enfants de moins de 5 ans :
+La DGSE indique qu'un extrait de naissance datant de moins de trois mois
+est fourni à la place de la carte nationale d'identité.
+
+Autres cas particuliers mentionnés :
+- jugement supplétif ;
+- personne ayant un nom à consonance étrangère.
+
+Limite d'utilisation dans AdmiGuide :
+Les informations de cette source qui ne sont pas confirmées
+par une source applicable au parcours Dakar doivent rester
+des informations complémentaires et ne pas être ajoutées
+automatiquement aux pièces obligatoires de l'orientation Dakar.
+
+
+=== SOURCE ===
+ID: PASSEPORT_DGSE_RENOUVELLEMENT_COMPLEMENT_01
+TITRE: Renouvellement de passeport - informations documentaires complémentaires DGSE
+URL: https://dgse.gouv.sn/content/renouvellement-de-passeport
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-13
+PAYS_APPLICATION: SN
+
+CONTENU:
+Nature de la source :
+Source officielle de la Direction générale des Sénégalais
+de l'Extérieur.
+
+Portée dans AdmiGuide :
+Cette source complète les informations relatives aux différents
+cas de renouvellement.
+
+Pour un particulier résidant à Dakar, elle ne doit pas remplacer
+les modalités territoriales du Ministère de l'Intérieur.
+
+Les éléments propres à la résidence à l'étranger ne doivent pas
+être considérés automatiquement comme obligatoires pour Dakar.
+
+Cas 1 : passeport expiré
+
+La DGSE indique notamment :
+- le passeport expiré, accompagné d'une copie ;
+- la carte nationale d'identité ;
+- selon le cas, un document relatif à l'inscription
+  ou à la cession du nom marital ;
+- un justificatif de domicile.
+
+Cas 2 : passeport perdu
+
+La DGSE indique notamment :
+- une attestation de perte délivrée par un commissariat de police ;
+- la carte nationale d'identité ;
+- selon le cas, un document relatif à l'inscription
+  ou à la cession du nom marital ;
+- un justificatif de domicile.
+
+Complément utile pour le parcours Dakar :
+L'attestation de perte délivrée par un commissariat précise
+la nature du document résultant de la déclaration de perte
+mentionnée par le Ministère de l'Intérieur.
+
+Cas 3 : passeport détérioré
+
+La DGSE indique notamment :
+- le passeport détérioré ;
+- la carte nationale d'identité ;
+- selon le cas, un document relatif à l'inscription
+  ou à la cession du nom marital ;
+- un justificatif de domicile.
+
+Cas des mineurs :
+La source indique qu'une autorisation parentale accompagnée
+de la pièce d'identité ou du passeport du parent est nécessaire.
+
+Cas particuliers :
+La DGSE précise qu'un renouvellement pour passeport biométrique
+perdu ou détérioré peut faire l'objet d'une attention particulière
+de l'autorité de décision et prendre davantage de temps.
+
+Limite d'utilisation dans AdmiGuide :
+Le justificatif de domicile et les autres éléments qui pourraient
+être propres au contexte des Sénégalais de l'extérieur ne doivent
+pas être ajoutés automatiquement aux pièces obligatoires
+du parcours Dakar sans confirmation par une source applicable
+au Sénégal.
+
+
+=== SOURCE ===
+ID: PASSEPORT_ESENEGAL_DAKAR_01
+TITRE: Demander un passeport numérisé - e-Sénégal
+URL: https://e-senegal.sn/#/comprendre-ma-demarche/demarche/demander-un-passeport-numerise
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-13
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Demander un passeport numérisé sénégalais.
+
+Portée :
+Cette source officielle complète les informations relatives
+à la demande, au renouvellement, à la perte ou au vol
+d'un passeport au Sénégal.
+
+Bénéficiaires :
+Tout citoyen sénégalais peut demander un passeport ordinaire
+dès la naissance.
+
+Cas des enfants mineurs :
+Joindre :
+- une autorisation parentale ;
+- une copie certifiée conforme de la carte nationale d'identité
+  du père ou de la mère ;
+- un certificat de prise en charge délivré par la mairie
+  ou la justice.
+
+Quand effectuer la demande :
+En cas de voyage ou en prévision d'un voyage à l'étranger
+pour lequel un passeport est requis.
+
+Pièces indiquées :
+- présentation de l'original de la carte nationale d'identité ;
+- une copie de la carte nationale d'identité à déposer ;
+- une quittance attestant du paiement de la somme due
+  auprès de la Direction de l'Enregistrement,
+  des Domaines et du Timbre.
+
+Cas des enfants de moins de 5 ans :
+Fournir un extrait de naissance datant de moins de trois mois
+à la place de la carte nationale d'identité.
+
+Cas des élèves et étudiants :
+Ils doivent justifier leur statut avec :
+- une carte d'étudiant valide ;
+ou
+- un certificat de scolarité.
+
+Coût :
+20 000 FCFA.
+
+Paiement :
+Le paiement est effectué auprès de la Direction
+de l'Enregistrement, des Domaines et du Timbre.
+
+Délai de délivrance indiqué par cette source :
+1 à 2 semaines.
+
+Les dossiers des élèves, des étudiants et des personnes
+devant faire l'objet d'une évacuation sanitaire
+sont traités en priorité.
+
+Cas particulier DPETV :
+La source indique un délai de 3 jours au niveau
+de la Direction de la Police des étrangers
+et des titres de voyage (DPETV).
+
+Renouvellement :
+La source indique qu'un passeport est renouvelable une fois.
+
+Pour le renouvellement, elle demande :
+- l'ancien passeport numérisé ;
+- une copie du passeport numérisé ;
+- une quittance de 20 000 FCFA.
+
+La source indique une durée de validité de 5 ans.
+
+Perte ou vol :
+Faire une déclaration de perte puis refaire
+la procédure de demande de passeport.
+
+Aucun duplicata n'est délivré.
+
+Service compétent :
+Le commissariat de police dont relève le domicile du demandeur.
+
+Modalités particulières à Dakar :
+Le demandeur se présente au commissariat sur rendez-vous.
+
+Il effectue d'abord le paiement afin d'obtenir la quittance.
+
+Pour obtenir le rendez-vous, la source indique
+le serveur vocal Africatel AVS au 88 628 19 01.
+
+L'appel est indiqué comme surtaxé,
+à environ 400 FCFA l'unité.
+
+Le numéro de la quittance est demandé lors
+de la prise de rendez-vous.
+
+La source indique un délai de rendez-vous
+variant de 1 à 15 jours selon l'affluence.
+
+Pour en savoir plus :
+S'adresser à la Direction de la Police des étrangers
+et des titres de voyage (DPETV).
+
+La source renvoie également aux articles 771
+et suivants du Code général des impôts.
+
+Points à consolider dans AdmiGuide :
+Cette source indique une durée de validité de 5 ans,
+alors que le Ministère de l'Intérieur et la DGSE
+indiquent actuellement 4 ans.
+
+Elle indique également un délai de rendez-vous
+de 1 à 15 jours, tandis que le Ministère de l'Intérieur
+indique actuellement 2 à 25 jours.
+
+Pour l'orientation Dakar, AdmiGuide utilise les informations
+du Ministère de l'Intérieur lorsque ces valeurs sont contradictoires.

@@ -47,6 +47,32 @@ class RetrievalService:
         return contenus
 
     # Transforme les résultats en contexte lisible pour le LLM.
+    def build_context_from_results(
+        self,
+        contenus: list[dict],
+    ) -> str:
+        blocs = []
+
+        # Prepare un bloc lisible pour chaque contenu retrouvé.
+        for index, contenu in enumerate(
+            contenus,
+            start=1,
+        ):
+            bloc = (
+                f"SOURCE {index}\n"
+                f"ID : {contenu['source_id']}\n"
+                f"Titre : {contenu['source_titre']}\n"
+                f"URL : {contenu['source_url']}\n"
+                f"Contenu :\n{contenu['texte']}"
+            )
+
+            blocs.append(bloc)
+
+        # Separe clairement les differentes sources.
+        return "\n\n---\n\n".join(blocs)
+
+
+    # Recherche les contenus puis construit le contexte.
     def build_context(
         self,
         texte: str,
@@ -57,21 +83,9 @@ class RetrievalService:
             limit=limit,
         )
 
-        blocs = []
-
-        # Prépare un bloc lisible pour chaque contenu retrouvé.
-        for index, contenu in enumerate(contenus, start=1):
-            bloc = (
-                f"SOURCE {index}\n"
-                f"Titre : {contenu['source_titre']}\n"
-                f"URL : {contenu['source_url']}\n"
-                f"Contenu :\n{contenu['texte']}"
-            )
-
-            blocs.append(bloc)
-
-        # Sépare clairement les différentes sources.
-        return "\n\n---\n\n".join(blocs)
+        return self.build_context_from_results(
+            contenus
+        )
 
 
 # Réutilise la même instance pendant l'exécution de l'application.
