@@ -19,8 +19,9 @@ Ce script vérifie les domaines actuellement couverts par le MVP :
 - FONCIER
   - régularisation par voie de bail ;
   - acquisition d'un bien sous titre foncier ;
+  - transformation d'un bail en titre foncier ;
   - intention foncière à préciser ;
-  - transformation de bail en titre foncier non couverte.
+  - transformation nécessitant des précisions.
 
 À lancer depuis la racine de admiguide-ai :
 
@@ -70,12 +71,20 @@ MVP_DEMARCHE_CODES = [
     # Foncier.
     "REGULARISATION_BAIL",
     "ACQUISITION_MUTATION_TITRE_FONCIER",
+    "TRANSFORMATION_BAIL_EN_TITRE_FONCIER",
 ]
 
 
-# Pause entre deux appels afin de limiter
+# Pause entre deux tests afin de limiter
 # les erreurs 429 liées au quota Groq.
 DELAI_ENTRE_TESTS = 20
+
+# Si Groq refuse temporairement une requête,
+# le test est retenté avant d'être considéré
+# comme une véritable erreur.
+NOMBRE_MAX_TENTATIVES = 3
+
+DELAI_AVANT_NOUVELLE_TENTATIVE = 25
 
 
 # ==========================================================
@@ -277,6 +286,21 @@ TESTS = [
     },
 
     {
+        "nom": "Foncier - Transformation bail en titre foncier",
+        "situation": (
+            "J'ai un bail sur un terrain à usage d'habitation "
+            "à Dakar. La mise en valeur prévue dans le bail "
+            "a été réalisée et je souhaite transformer "
+            "ce bail en titre foncier."
+        ),
+        "reponses": [],
+        "statut_attendu": "ORIENTATION",
+        "code_attendu": (
+            "TRANSFORMATION_BAIL_EN_TITRE_FONCIER"
+        ),
+    },
+
+    {
         "nom": "Foncier - Intention à préciser",
         "situation": (
             "J'ai un terrain au Sénégal "
@@ -294,20 +318,30 @@ TESTS = [
                 "Acheter un bien qui possède déjà "
                 "un titre foncier"
             ),
+            "Transformer un bail en titre foncier",
             "Autre situation",
             "Je ne sais pas",
         ],
     },
 
     {
-        "nom": "Foncier - Transformation bail non couverte",
+        "nom": "Foncier - Transformation bail à préciser",
         "situation": (
             "J'ai déjà un bail sur mon terrain "
             "et je souhaite le transformer "
             "en titre foncier."
         ),
         "reponses": [],
-        "statut_attendu": "SOURCES_INSUFFISANTES",
+        "statut_attendu": "PRECISIONS_REQUISES",
+        "question_attendue": (
+            "Le terrain concerné est-il destiné "
+            "à l'habitation ?"
+        ),
+        "options_attendues": [
+            "Oui",
+            "Non",
+            "Je ne sais pas",
+        ],
     },
 ]
 
@@ -425,7 +459,7 @@ def verifier_resultat(
             is not None
         )
 
-        # Vérifie aussi les options lorsque
+        # Vérifie également les options lorsque
         # le test en attend explicitement.
         if (
             ok
@@ -471,6 +505,66 @@ def verifier_resultat(
 
 
 # ==========================================================
+# APPEL IA AVEC NOUVELLE TENTATIVE
+# ==========================================================
+
+async def analyser_avec_retry(
+    service,
+    test: dict,
+):
+    """
+    Lance un cas de test.
+
+    Si le fournisseur IA est temporairement indisponible,
+    le même test est retenté avant d'être considéré
+    comme une erreur définitive.
+    """
+
+    derniere_erreur = None
+
+    for tentative in range(
+        1,
+        NOMBRE_MAX_TENTATIVES + 1,
+    ):
+
+        try:
+
+            return await service.analyze(
+                situation=test["situation"],
+                demarche_codes=MVP_DEMARCHE_CODES,
+                reponses=test["reponses"],
+            )
+
+        except RuntimeError as exc:
+
+            derniere_erreur = exc
+
+            if (
+                tentative
+                == NOMBRE_MAX_TENTATIVES
+            ):
+                raise
+
+            print(
+                "\nService IA temporairement indisponible."
+            )
+
+            print(
+                f"Nouvelle tentative "
+                f"{tentative + 1}/"
+                f"{NOMBRE_MAX_TENTATIVES} "
+                f"dans "
+                f"{DELAI_AVANT_NOUVELLE_TENTATIVE} secondes..."
+            )
+
+            await asyncio.sleep(
+                DELAI_AVANT_NOUVELLE_TENTATIVE
+            )
+
+    raise derniere_erreur
+
+
+# ==========================================================
 # EXÉCUTION DES TESTS
 # ==========================================================
 
@@ -511,16 +605,9 @@ async def main() -> None:
         try:
 
             resultat = (
-                await service.analyze(
-                    situation=(
-                        test["situation"]
-                    ),
-                    demarche_codes=(
-                        MVP_DEMARCHE_CODES
-                    ),
-                    reponses=(
-                        test["reponses"]
-                    ),
+                await analyser_avec_retry(
+                    service,
+                    test,
                 )
             )
 

@@ -115,3 +115,171 @@ Dans la procédure d'acquisition d'un immeuble possédant déjà
 un titre foncier, l'état de droits réels permet notamment
 de vérifier l'identité du propriétaire, la consistance
 de l'immeuble et les éventuelles charges inscrites.
+
+
+=== SOURCE ===
+ID: TRANSFORMATION_BAIL_TITRE_FONCIER_LOI_2017_31_01
+TITRE: Cession définitive gratuite de terrains domaniaux à usage d'habitation - Loi n°2017-31
+URL: https://www.dri.gouv.sn/sites/default/files/LOI/2017/2017_31.pdf
+TYPE: DOCUMENT
+DATE_VERIFICATION: 2026-10-14
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Obtenir la cession définitive d'un terrain domanial à usage d'habitation
+et accéder à la pleine propriété.
+
+Base juridique :
+La loi n°2017-31 du 15 juillet 2017 autorise la cession définitive
+et à titre gratuit de certains terrains domaniaux à usage d'habitation.
+
+Terrains concernés :
+Sont notamment concernés les terrains domaniaux attribués :
+- par bail ordinaire ;
+- par bail emphytéotique ;
+- par concession du droit de superficie.
+
+Pour ces titres, le terrain doit avoir été mis en valeur conformément
+à l'obligation prévue dans le titre d'occupation.
+
+La loi concerne également certains terrains à usage d'habitation
+faisant l'objet notamment :
+- d'un permis d'habiter ;
+- d'un permis d'occuper ;
+- d'une autorisation d'occupation ;
+- d'une autorisation d'occuper.
+
+Condition territoriale et d'usage :
+La cession concerne les terrains domaniaux à usage d'habitation
+individuelle situés dans une zone dotée d'un plan d'urbanisme approuvé
+ou résultant d'un lotissement approuvé par l'Administration.
+
+Coût juridique de la cession :
+La cession des terrains concernés ainsi que leur mutation subséquente
+sont exonérées de tous droits et taxes.
+
+Limite d'application :
+Cette procédure ne doit pas être confondue avec l'achat d'un immeuble
+qui possède déjà un titre foncier appartenant à un particulier.
+
+
+=== SOURCE ===
+ID: TRANSFORMATION_BAIL_TITRE_FONCIER_DECRET_2018_830_01
+TITRE: Procédure de cession définitive gratuite - Décret n°2018-830
+URL: https://www.dgid.sn/storage/docs/D%C3%A9cret%20d_application%20n%202018-830%20%20autorisant%20la%20cession%20de-finitive%20et%20a-%20titre%20gratuit%20de%20terrains%20domaniaux%20a-%20usage%20d_habitation%5B1%5D.pdf
+TYPE: DOCUMENT
+DATE_VERIFICATION: 2026-10-14
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Demander la cession définitive d'un terrain domanial à usage
+d'habitation détenu notamment au moyen d'un bail admissible.
+
+Conditions principales :
+Pour bénéficier de la cession gratuite, le demandeur doit :
+- justifier de sa qualité d'attributaire du terrain domanial ;
+- avoir respecté l'obligation de mise en valeur prévue
+  dans son titre d'occupation.
+
+Demande pour un bail ou autre droit d'usage à temps :
+La demande de cession définitive est adressée au chef du Bureau
+des Domaines territorialement compétent.
+
+Elle est accompagnée :
+- d'un état de droits réels et/ou ;
+- d'un certificat permettant d'établir les droits concernés.
+
+Instruction du dossier :
+Le chef du Bureau des Domaines vérifie que le dossier respecte
+les conditions d'éligibilité.
+
+La mise en valeur doit être constatée par un procès-verbal
+dressé par les services compétents du Cadastre.
+
+Après vérification, le dossier est transmis avec les avis
+et observations au Directeur chargé des Domaines.
+
+Transfert de propriété :
+La propriété est transférée au Livre foncier sur la base
+d'un arrêté du ministre chargé des Domaines.
+
+Cet arrêté intervient après avis favorable de la Commission
+de contrôle des opérations domaniales.
+
+Résultat :
+Après les formalités d'inscription, le Conservateur de la propriété
+et des droits fonciers territorialement compétent remet au nouveau
+propriétaire la copie originale du titre foncier.
+
+Cas d'un attributaire décédé :
+Les héritiers doivent notamment fournir :
+- un jugement d'hérédité ;
+- le certificat de non-opposition ni appel correspondant ;
+- un certificat de paiement des droits de mutation par décès ;
+- un acte de partage homologué, lorsqu'il existe.
+
+
+=== SOURCE ===
+ID: TRANSFORMATION_BAIL_TITRE_FONCIER_CADASTRE_DGID_01
+TITRE: Rôle du Cadastre dans la transformation des titres précaires en titres fonciers - DGID
+URL: https://www.dgid.sn/wp-content/uploads/2022/10/Magazine-ID-N%C2%B032_juillet_aou%CC%82t_septembre-2022-1_compressed.pdf
+TYPE: DOCUMENT
+DATE_VERIFICATION: 2026-10-14
+PAYS_APPLICATION: SN
+
+CONTENU:
+Rôle du Cadastre :
+Dans une procédure de cession définitive d'un terrain domanial,
+les services du Cadastre interviennent notamment pour constater
+la mise en valeur du terrain.
+
+Constat de mise en valeur :
+Cette opération nécessite un déplacement sur le terrain.
+
+Elle permet notamment :
+- d'évaluer le niveau de réalisation de la mise en valeur ;
+- de déterminer la superficie de la parcelle.
+
+Un procès-verbal de constat de mise en valeur est établi.
+
+Bornage :
+Le processus de transformation d'un titre précaire en titre foncier
+passe également par une opération de bornage lorsque la parcelle
+n'a pas déjà fait l'objet d'un titre foncier distinct.
+
+Utilité pour la démarche :
+Ces interventions cadastrales participent à l'instruction technique
+du dossier avant l'inscription définitive du droit au Livre foncier.
+
+
+=== SOURCE ===
+ID: TRANSFORMATION_BAIL_TITRE_FONCIER_DELAI_DGID_01
+TITRE: Délai de traitement de l'acte de cession définitive - DGID
+URL: https://www.dgid.sn/wp-content/uploads/2022/11/instruction_ministerielle_n_1_du_16_mars_2009_fixant_les_delais_de_traitement_des_dossiers_au_sein_du_mef_0.pdf
+TYPE: DOCUMENT
+DATE_VERIFICATION: 2026-10-14
+PAYS_APPLICATION: SN
+
+CONTENU:
+Délai indicatif :
+L'instruction ministérielle relative aux délais de traitement
+des dossiers fixe à trois mois le délai de traitement
+d'un acte de cession définitive.
+
+L'acte de cession définitive y est décrit comme un acte
+soumis à l'approbation de l'autorité portant sur la cession
+d'un terrain domanial.
+
+Information complémentaire :
+L'état de droits réels portant sur un titre est indiqué
+avec un délai de trois jours.
+
+Précaution :
+Le délai de trois mois correspond au traitement administratif
+de l'acte de cession définitive.
+
+Le déroulement complet d'un dossier peut également dépendre
+de la complétude du dossier et des opérations foncières
+ou cadastrales nécessaires.

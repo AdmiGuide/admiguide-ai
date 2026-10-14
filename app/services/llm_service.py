@@ -25,9 +25,9 @@ class LLMService:
             )
 
     async def generate(
-        self,
-        system_prompt: str,
-        user_prompt: str,
+    self,
+    system_prompt: str,
+    user_prompt: str,
     ) -> str:
         """Envoie une demande à Groq et retourne la réponse du modèle."""
 
@@ -53,17 +53,33 @@ class LLMService:
             "Content-Type": "application/json",
         }
 
-        # Envoie la requête à Groq.
-        async with httpx.AsyncClient(
-            timeout=60.0,
-        ) as client:
-            response = await client.post(
-                f"{settings.groq_base_url}/chat/completions",
-                headers=headers,
-                json=payload,
+        try:
+            # Envoie la requête à Groq.
+            async with httpx.AsyncClient(
+                timeout=60.0,
+            ) as client:
+                response = await client.post(
+                    (
+                        f"{settings.groq_base_url}"
+                        "/chat/completions"
+                    ),
+                    headers=headers,
+                    json=payload,
+                )
+
+        except httpx.RequestError as exc:
+            # Une erreur réseau ou un timeout est temporaire.
+            print(
+                "Erreur de connexion à Groq :",
+                type(exc).__name__,
+                str(exc),
             )
 
-        # Signale clairement une erreur de l'API.
+            raise RuntimeError(
+                "Impossible de contacter temporairement Groq."
+            ) from exc
+
+        # Signale clairement une erreur retournée par l'API.
         if response.status_code >= 400:
             print(
                 "Erreur Groq :",
@@ -75,7 +91,13 @@ class LLMService:
                 f"Erreur Groq : HTTP {response.status_code}"
             )
 
-        data = response.json()
+        try:
+            data = response.json()
+
+        except ValueError as exc:
+            raise RuntimeError(
+                "Groq a retourné une réponse JSON invalide."
+            ) from exc
 
         # Vérifie que la réponse contient bien du texte.
         try:

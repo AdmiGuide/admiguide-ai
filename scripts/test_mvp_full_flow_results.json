@@ -15,17 +15,10 @@
   },
   {
     "nom": "Passeport - Renouvellement",
-    "statut_recu": "ORIENTATION",
+    "statut_recu": null,
     "statut_attendu": "ORIENTATION",
-    "demarche_code_recu": "RENOUVELLEMENT_PASSEPORT",
-    "demarche_code_attendu": "RENOUVELLEMENT_PASSEPORT",
-    "verdict": "OK",
-    "resultat_complet": {
-      "statut": "ORIENTATION",
-      "demarche_code": "RENOUVELLEMENT_PASSEPORT",
-      "resume": "Passeport sénégalais expiré, souhait de le renouveler à Dakar.",
-      "avertissement": ""
-    }
+    "verdict": "ERREUR",
+    "erreur": "ConnectTimeout: "
   },
   {
     "nom": "Passeport - Perte",
@@ -43,34 +36,10 @@
   },
   {
     "nom": "Passeport - Intention à préciser",
-    "statut_recu": "PRECISIONS_REQUISES",
+    "statut_recu": null,
     "statut_attendu": "PRECISIONS_REQUISES",
-    "question_attendue": "Quelle est votre situation concernant votre passeport sénégalais ?",
-    "questions_recues": [
-      "Quelle est votre situation concernant votre passeport sénégalais ?"
-    ],
-    "options_recues": [
-      "Je souhaite demander un passeport pour la première fois",
-      "Je souhaite renouveler mon passeport",
-      "J'ai perdu ou on m'a volé mon passeport",
-      "Autre situation"
-    ],
-    "verdict": "OK",
-    "resultat_complet": {
-      "statut": "PRECISIONS_REQUISES",
-      "questions": [
-        {
-          "texte": "Quelle est votre situation concernant votre passeport sénégalais ?",
-          "type_question": "CHOIX_UNIQUE",
-          "options": [
-            "Je souhaite demander un passeport pour la première fois",
-            "Je souhaite renouveler mon passeport",
-            "J'ai perdu ou on m'a volé mon passeport",
-            "Autre situation"
-          ]
-        }
-      ]
-    }
+    "verdict": "ERREUR",
+    "erreur": "ConnectTimeout: "
   },
   {
     "nom": "Passeport - Pays émetteur inconnu",
@@ -199,7 +168,7 @@
     "resultat_complet": {
       "statut": "ORIENTATION",
       "demarche_code": "REGULARISATION_BAIL",
-      "resume": "L'utilisateur occupe un terrain relevant du domaine privé de l'État et souhaite obtenir un bail pour régulariser sa situation.",
+      "resume": "L'utilisateur occupe un terrain dépendant du domaine privé de l'État et souhaite obtenir un bail pour régulariser sa situation.",
       "avertissement": ""
     }
   },
@@ -213,7 +182,21 @@
     "resultat_complet": {
       "statut": "ORIENTATION",
       "demarche_code": "ACQUISITION_MUTATION_TITRE_FONCIER",
-      "resume": "L'utilisateur souhaite acheter un terrain appartenant à un particulier, déjà doté d'un titre foncier, et veut que le bien soit inscrit à son nom.",
+      "resume": "L'utilisateur souhaite acheter un terrain appartenant à un particulier, déjà doté d'un titre foncier, et faire inscrire le bien à son nom après l'achat.",
+      "avertissement": ""
+    }
+  },
+  {
+    "nom": "Foncier - Transformation bail en titre foncier",
+    "statut_recu": "ORIENTATION",
+    "statut_attendu": "ORIENTATION",
+    "demarche_code_recu": "TRANSFORMATION_BAIL_EN_TITRE_FONCIER",
+    "demarche_code_attendu": "TRANSFORMATION_BAIL_EN_TITRE_FONCIER",
+    "verdict": "OK",
+    "resultat_complet": {
+      "statut": "ORIENTATION",
+      "demarche_code": "TRANSFORMATION_BAIL_EN_TITRE_FONCIER",
+      "resume": "L'utilisateur possède un bail sur un terrain à usage d'habitation à Dakar, a réalisé la mise en valeur prévue dans le bail et souhaite transformer ce bail en titre foncier.",
       "avertissement": ""
     }
   },
@@ -228,6 +211,7 @@
     "options_recues": [
       "Obtenir un bail pour un terrain",
       "Acheter un bien qui possède déjà un titre foncier",
+      "Transformer un bail en titre foncier",
       "Autre situation",
       "Je ne sais pas"
     ],
@@ -241,6 +225,7 @@
           "options": [
             "Obtenir un bail pour un terrain",
             "Acheter un bien qui possède déjà un titre foncier",
+            "Transformer un bail en titre foncier",
             "Autre situation",
             "Je ne sais pas"
           ]
@@ -249,14 +234,32 @@
     }
   },
   {
-    "nom": "Foncier - Transformation bail non couverte",
-    "statut_recu": "SOURCES_INSUFFISANTES",
-    "statut_attendu": "SOURCES_INSUFFISANTES",
-    "message_recu": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles.",
+    "nom": "Foncier - Transformation bail à préciser",
+    "statut_recu": "PRECISIONS_REQUISES",
+    "statut_attendu": "PRECISIONS_REQUISES",
+    "question_attendue": "Le terrain concerné est-il destiné à l'habitation ?",
+    "questions_recues": [
+      "Le terrain concerné est-il destiné à l'habitation ?"
+    ],
+    "options_recues": [
+      "Oui",
+      "Non",
+      "Je ne sais pas"
+    ],
     "verdict": "OK",
     "resultat_complet": {
-      "statut": "SOURCES_INSUFFISANTES",
-      "message": "La transformation d'un bail en titre foncier n'est pas couverte par les démarches disponibles."
+      "statut": "PRECISIONS_REQUISES",
+      "questions": [
+        {
+          "texte": "Le terrain concerné est-il destiné à l'habitation ?",
+          "type_question": "CHOIX_UNIQUE",
+          "options": [
+            "Oui",
+            "Non",
+            "Je ne sais pas"
+          ]
+        }
+      ]
     }
   }
 ]

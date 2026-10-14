@@ -187,62 +187,69 @@ FONCIER
 Les démarches disponibles sont :
 - REGULARISATION_BAIL
 - ACQUISITION_MUTATION_TITRE_FONCIER
+- TRANSFORMATION_BAIL_EN_TITRE_FONCIER
+
 
 RÈGLE IMPORTANTE POUR IDENTIFIER L'INTENTION :
 
 - Ne suppose jamais le statut juridique d'un terrain ou d'un bien.
 - Le mot "régulariser", utilisé seul, ne permet pas d'identifier
-  REGULARISATION_BAIL.
-- Le fait que l'utilisateur possède, occupe ou parle d'un terrain
-  ne permet pas non plus de choisir une démarche.
-- Ne déduis jamais l'intention de l'utilisateur uniquement à partir
-  du mot "régulariser".
-- REGULARISATION_BAIL ne peut être envisagée que si l'utilisateur
-  indique explicitement vouloir obtenir un bail, ou s'il sélectionne
-  l'option correspondante dans une question complémentaire.
-- ACQUISITION_MUTATION_TITRE_FONCIER ne peut être envisagée que si
-  l'utilisateur indique explicitement vouloir acheter ou acquérir
-  un bien qui possède déjà un titre foncier, ou s'il sélectionne
-  l'option correspondante.
+  une démarche foncière précise.
+- Le fait que l'utilisateur possède ou occupe un terrain
+  ne permet pas non plus de choisir automatiquement une démarche.
 
-Si l'utilisateur dit seulement qu'il souhaite "régulariser",
-"mettre en règle" ou "régler la situation" d'un terrain ou d'un bien,
-sans préciser son objectif, pose obligatoirement :
+Les trois démarches correspondent à des situations différentes :
+
+- REGULARISATION_BAIL :
+  l'utilisateur souhaite obtenir un bail sur un terrain.
+
+- ACQUISITION_MUTATION_TITRE_FONCIER :
+  l'utilisateur souhaite acheter un bien qui possède déjà
+  un titre foncier appartenant à un particulier.
+
+- TRANSFORMATION_BAIL_EN_TITRE_FONCIER :
+  l'utilisateur possède déjà un bail sur un terrain
+  et souhaite accéder à la pleine propriété
+  par sa transformation en titre foncier.
+
+
+Si l'intention de l'utilisateur n'est pas claire,
+pose obligatoirement :
 
 "Que souhaitez-vous faire concernant ce terrain ou ce bien ?"
 
 Options exactes :
 ["Obtenir un bail pour un terrain",
  "Acheter un bien qui possède déjà un titre foncier",
+ "Transformer un bail en titre foncier",
  "Autre situation",
  "Je ne sais pas"]
 
-Ne suppose jamais qu'un terrain sans titre foncier
-relève automatiquement de la régularisation par voie de bail.
 
-Ne suppose jamais qu'un terrain relève du domaine privé de l'État.
+Si l'utilisateur choisit :
+
+"Obtenir un bail pour un terrain"
+- examine les règles de REGULARISATION_BAIL.
+
+"Acheter un bien qui possède déjà un titre foncier"
+- examine les règles de ACQUISITION_MUTATION_TITRE_FONCIER.
+
+"Transformer un bail en titre foncier"
+- examine les règles de TRANSFORMATION_BAIL_EN_TITRE_FONCIER.
+
+"Autre situation"
+- retourne SOURCES_INSUFFISANTES.
+
 
 Ne confonds jamais :
 - l'obtention d'un bail ;
 - l'acquisition d'un bien possédant déjà un titre foncier ;
-- la transformation d'un bail ou d'un permis d'occuper
-  en titre foncier.
-
-La transformation d'un titre d'occupation en titre foncier
-n'est pas couverte par les démarches disponibles.
-
-Si l'intention de l'utilisateur n'est pas claire, demande :
-
-"Que souhaitez-vous faire concernant ce terrain ou ce bien ?"
-
-Options exactes :
-["Obtenir un bail pour un terrain",
- "Acheter un bien qui possède déjà un titre foncier",
- "Autre situation",
- "Je ne sais pas"]
+- la transformation d'un bail existant en titre foncier.
 
 
-CAS REGULARISATION_BAIL :
+# ----------------------------------------------------------
+# CAS REGULARISATION_BAIL
+# ----------------------------------------------------------
 
 La démarche REGULARISATION_BAIL concerne une personne physique
 ou morale qui souhaite obtenir un bail sur un terrain qu'elle occupe
@@ -267,10 +274,13 @@ Si la réponse est "Je ne sais pas" :
 - retourne SOURCES_INSUFFISANTES.
 
 
-CAS ACQUISITION_MUTATION_TITRE_FONCIER :
+# ----------------------------------------------------------
+# CAS ACQUISITION_MUTATION_TITRE_FONCIER
+# ----------------------------------------------------------
 
 Cette démarche concerne l'acquisition d'un bien
-qui possède déjà un titre foncier et qui appartient à un particulier.
+qui possède déjà un titre foncier
+et qui appartient actuellement à un particulier.
 
 Si l'utilisateur souhaite acheter le bien mais que l'existence
 du titre foncier n'est pas établie, demande :
@@ -281,11 +291,13 @@ Options exactes :
 ["Oui", "Non", "Je ne sais pas"]
 
 Si la réponse est "Non" :
+- ne choisis pas ACQUISITION_MUTATION_TITRE_FONCIER ;
 - retourne SOURCES_INSUFFISANTES.
 
 Si la réponse est "Je ne sais pas" :
 - ne repose pas cette question ;
 - retourne SOURCES_INSUFFISANTES.
+
 
 Si le titre foncier existe mais qu'il n'est pas établi
 que le bien appartient actuellement à un particulier, demande :
@@ -306,18 +318,108 @@ Si l'utilisateur répond "Je ne sais pas" :
 - ne repose pas la même question ;
 - retourne SOURCES_INSUFFISANTES.
 
-Si l'utilisateur indique vouloir transformer un bail,
-un permis d'occuper ou un autre titre d'occupation
-en titre foncier :
-- ne choisis aucune des deux démarches ;
+
+# ----------------------------------------------------------
+# CAS TRANSFORMATION_BAIL_EN_TITRE_FONCIER
+# ----------------------------------------------------------
+
+Cette démarche concerne un utilisateur qui possède déjà
+un bail sur un terrain domanial et souhaite transformer
+ce droit d'occupation en pleine propriété.
+
+Elle ne correspond pas à l'achat d'un bien qui possède déjà
+un titre foncier.
+
+Elle ne correspond pas non plus à une demande destinée
+à obtenir un nouveau bail.
+
+
+Condition 1 :
+Le terrain doit être destiné à l'habitation.
+Cette condition doit être vérifiée avant la condition
+relative à la mise en valeur.
+
+Si l'usage du terrain n'est pas connu :
+- pose uniquement la question sur l'usage du terrain ;
+- ne pose pas encore la question sur la mise en valeur
+  dans la même réponse.
+
+Si l'usage du terrain n'est pas connu, demande :
+
+"Le terrain concerné est-il destiné à l'habitation ?"
+
+Options exactes :
+["Oui", "Non", "Je ne sais pas"]
+
+Si la réponse est "Non" :
+- ne choisis pas TRANSFORMATION_BAIL_EN_TITRE_FONCIER ;
 - retourne SOURCES_INSUFFISANTES.
+
+Si la réponse est "Je ne sais pas" :
+- ne repose pas cette question ;
+- retourne SOURCES_INSUFFISANTES.
+
+
+Condition 2 :
+Cette condition ne doit être vérifiée que si
+l'utilisateur a déjà confirmé que le terrain
+est destiné à l'habitation.
+L'obligation de mise en valeur prévue dans le bail
+doit avoir été respectée.
+
+Si cette information n'est pas connue, demande :
+
+"La mise en valeur prévue dans votre bail a-t-elle été réalisée ?"
+
+Options exactes :
+["Oui", "Non", "Je ne sais pas"]
+
+Si la réponse est "Oui"
+et que le terrain est destiné à l'habitation :
+- utilise TRANSFORMATION_BAIL_EN_TITRE_FONCIER.
+
+Si la réponse est "Non" :
+- ne choisis pas TRANSFORMATION_BAIL_EN_TITRE_FONCIER ;
+- retourne SOURCES_INSUFFISANTES.
+
+Si la réponse est "Je ne sais pas" :
+- ne repose pas cette question ;
+- retourne SOURCES_INSUFFISANTES.
+
+
+Si l'utilisateur indique déjà clairement :
+- qu'il possède un bail ;
+- qu'il souhaite le transformer en titre foncier ;
+- que le terrain est destiné à l'habitation ;
+- et que la mise en valeur prévue par le bail a été réalisée ;
+
+alors :
+- ne repose aucune de ces questions ;
+- utilise directement TRANSFORMATION_BAIL_EN_TITRE_FONCIER.
+
+
+La conformité du terrain aux autres conditions administratives
+et foncières prévues par les textes sera vérifiée
+par les services compétents pendant l'instruction du dossier.
+
+Ne demande pas à l'utilisateur de confirmer lui-même
+des éléments techniques qu'il n'est normalement pas en mesure
+de vérifier, comme l'existence d'un plan d'urbanisme approuvé.
+
+
+# ----------------------------------------------------------
+# CAS NON COUVERTS
+# ----------------------------------------------------------
 
 Si l'utilisateur demande uniquement des informations
 sur le NICAD :
 - ne choisis aucune démarche foncière du parcours principal ;
 - retourne SOURCES_INSUFFISANTES.
-""".strip()
 
+Si la situation ne correspond clairement
+à aucune des trois démarches disponibles :
+- retourne SOURCES_INSUFFISANTES.
+""".strip()
 
 # ==========================================================
 # PROMPT SYSTÈME
@@ -370,6 +472,7 @@ def build_system_prompt(
         for code in (
             "REGULARISATION_BAIL",
             "ACQUISITION_MUTATION_TITRE_FONCIER",
+            "TRANSFORMATION_BAIL_EN_TITRE_FONCIER",
         )
     ):
         regles_metier.append(

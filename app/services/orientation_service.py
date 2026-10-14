@@ -66,17 +66,24 @@ class OrientationService:
             })
 
         # Foncier.
+        #
+        # Les différentes sources foncières peuvent correspondre
+        # à l'obtention d'un bail, à l'acquisition d'un bien
+        # déjà titré ou à la transformation d'un bail
+        # en titre foncier.
         if any(
             source_id.startswith((
                 "REGULARISATION_",
                 "ACQUISITION_",
                 "ETAT_DROITS_REELS_",
+                "TRANSFORMATION_BAIL_TITRE_FONCIER_",
             ))
             for source_id in source_ids
         ):
             codes_pertinents.update({
                 "REGULARISATION_BAIL",
                 "ACQUISITION_MUTATION_TITRE_FONCIER",
+                "TRANSFORMATION_BAIL_EN_TITRE_FONCIER",
             })
 
         # Si aucun domaine n'a été reconnu,
