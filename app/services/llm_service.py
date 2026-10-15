@@ -1,3 +1,6 @@
+import asyncio
+import re
+
 # Permet de réutiliser la même instance du service.
 from functools import lru_cache
 
@@ -24,12 +27,48 @@ class LLMService:
                 "LLM_MODEL_NAME est manquant dans le fichier .env."
             )
 
+    def _get_retry_delay(
+        self,
+        response: httpx.Response,
+    ) -> float:
+        """
+        Récupère le délai recommandé par Groq
+        lorsqu'une limite 429 est atteinte.
+        """
+
+        # Essaie d'abord l'en-tête HTTP Retry-After.
+        retry_after = response.headers.get("retry-after")
+
+        if retry_after:
+            try:
+                return float(retry_after)
+            except ValueError:
+                pass
+
+        # Sinon, cherche le délai dans le message Groq.
+        match = re.search(
+            r"try again in\s+(\d+(?:\.\d+)?)s",
+            response.text,
+            flags=re.IGNORECASE,
+        )
+
+        if match:
+            return float(match.group(1))
+
+        # Valeur de secours.
+        return 5.0
+
     async def generate(
-    self,
-    system_prompt: str,
-    user_prompt: str,
+        self,
+        system_prompt: str,
+        user_prompt: str,
     ) -> str:
-        """Envoie une demande à Groq et retourne la réponse du modèle."""
+        """
+        Envoie une demande à Groq.
+
+        En cas d'erreur 429, attend le délai conseillé
+        puis effectue une seule nouvelle tentative.
+        """
 
         payload = {
             "model": settings.llm_model_name,
@@ -53,43 +92,112 @@ class LLMService:
             "Content-Type": "application/json",
         }
 
+        url = (
+            f"{settings.groq_base_url.rstrip('/')}"
+            "/chat/completions"
+        )
+
+        # Un appel initial + une seule nouvelle tentative.
+        max_attempts = 2
+
         try:
-            # Envoie la requête à Groq.
             async with httpx.AsyncClient(
-                timeout=60.0,
+                timeout=20.0,
             ) as client:
-                response = await client.post(
-                    (
-                        f"{settings.groq_base_url}"
-                        "/chat/completions"
-                    ),
-                    headers=headers,
-                    json=payload,
-                )
+
+                for attempt in range(max_attempts):
+
+                    response = await client.post(
+                        url,
+                        headers=headers,
+                        json=payload,
+                    )
+
+                    # ==========================================
+                    # GESTION DU RATE LIMIT 429
+                    # ==========================================
+                    if response.status_code == 429:
+
+                        print(
+                            "Limite Groq 429 atteinte.",
+                            flush=True,
+                        )
+
+                        # Si nous avons déjà réessayé une fois,
+                        # on arrête.
+                        if attempt == max_attempts - 1:
+                            break
+
+                        retry_delay = self._get_retry_delay(
+                            response
+                        )
+
+                        # On évite une attente trop longue
+                        # afin de rester sous le timeout Django.
+                        if retry_delay > 15:
+                            print(
+                                (
+                                    "Délai Groq trop long "
+                                    f"({retry_delay:.1f}s). "
+                                    "Pas de nouvelle tentative."
+                                ),
+                                flush=True,
+                            )
+                            break
+
+                        # Petite marge après le délai Groq.
+                        retry_delay += 0.5
+
+                        print(
+                            (
+                                "Nouvelle tentative Groq dans "
+                                f"{retry_delay:.1f}s..."
+                            ),
+                            flush=True,
+                        )
+
+                        await asyncio.sleep(
+                            retry_delay
+                        )
+
+                        continue
+
+                    # Une réponse différente de 429
+                    # sort immédiatement de la boucle.
+                    break
 
         except httpx.RequestError as exc:
-            # Une erreur réseau ou un timeout est temporaire.
+            # Erreur réseau ou timeout.
             print(
                 "Erreur de connexion à Groq :",
                 type(exc).__name__,
                 str(exc),
+                flush=True,
             )
 
             raise RuntimeError(
                 "Impossible de contacter temporairement Groq."
             ) from exc
 
-        # Signale clairement une erreur retournée par l'API.
+        # ==============================================
+        # AUTRES ERREURS HTTP
+        # ==============================================
+
         if response.status_code >= 400:
             print(
                 "Erreur Groq :",
                 response.status_code,
                 response.text[:1000],
+                flush=True,
             )
 
             raise RuntimeError(
                 f"Erreur Groq : HTTP {response.status_code}"
             )
+
+        # ==============================================
+        # LECTURE DU JSON
+        # ==============================================
 
         try:
             data = response.json()
@@ -113,6 +221,14 @@ class LLMService:
             raise RuntimeError(
                 "Groq a retourné une réponse sans contenu généré."
             ) from exc
+
+        if (
+            not isinstance(contenu, str)
+            or not contenu.strip()
+        ):
+            raise RuntimeError(
+                "Groq a retourné une réponse vide."
+            )
 
         return contenu.strip()
 
