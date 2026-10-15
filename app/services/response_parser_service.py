@@ -30,6 +30,7 @@ def parse_llm_response(
 
         # Refuse un code de démarche qui n'était pas autorisé.
         if resultat.demarche_code not in demarche_codes:
+
             raise ValueError(
                 "Le modèle a retourné un code de démarche non autorisé."
             )

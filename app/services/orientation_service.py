@@ -1,7 +1,17 @@
+import re
+
 # Permet de réutiliser la même instance du service.
 from functools import lru_cache
 
-# Services déjà validés pour le RAG et le LLM.
+# Schémas de réponse de l'API.
+from app.schemas.orientation import (
+    OrientationResponse,
+    PrecisionsRequisesResponse,
+    QuestionComplementaireResponse,
+    SourcesInsuffisantesResponse,
+)
+
+# Services RAG et LLM.
 from app.services.llm_service import get_llm_service
 from app.services.prompt_service import (
     build_system_prompt,
@@ -11,93 +21,845 @@ from app.services.response_parser_service import parse_llm_response
 from app.services.retrieval_service import get_retrieval_service
 
 
+# ==========================================================
+# DOMAINES DU MVP
+# ==========================================================
+
+DOMAINES_CODES = {
+    "PASSEPORT": {
+        "DEMANDE_PASSEPORT_ORDINAIRE",
+        "RENOUVELLEMENT_PASSEPORT",
+        "PASSEPORT_PERDU_OU_VOLE",
+    },
+    "PENSION": {
+        "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
+        "REVERSION_PENSION_APRES_RETRAITE",
+    },
+    "FONCIER": {
+        "REGULARISATION_BAIL",
+        "ACQUISITION_MUTATION_TITRE_FONCIER",
+        "TRANSFORMATION_BAIL_EN_TITRE_FONCIER",
+    },
+}
+
+
+# ==========================================================
+# INDICES POUR IDENTIFIER LE DOMAINE
+# ==========================================================
+
+INDICES_DOMAINES = {
+    "PASSEPORT": [
+        r"\bpasseports?\b",
+        r"\btitre de voyage\b",
+    ],
+
+    "PENSION": [
+        r"\bdécès\b",
+        r"\bdeces\b",
+        r"\bdécéd(?:é|ée|és|ées)\b",
+        r"\bdéfunt(?:e|s|es)?\b",
+        r"\bfonctionnaires?\b",
+        r"\bpensions?\b",
+        r"\bréversions?\b",
+        r"\bretrait(?:e|é|ée|és|ées)\b",
+    ],
+
+    "FONCIER": [
+        r"\bterrains?\b",
+        r"\bparcelles?\b",
+        r"\bbail\b",
+        r"\bbaux\b",
+        r"\bfonciers?\b",
+        r"\bmaisons?\b",
+        r"\bimmobili(?:er|ère|ers|ères)\b",
+        r"\bcadastre\b",
+        r"\bpropriét(?:é|aire|aires)\b",
+    ],
+}
+
+
+# ==========================================================
+# QUESTION DE DOMAINE
+# ==========================================================
+
+QUESTION_DOMAINE = (
+    "Votre demande concerne principalement quel sujet ?"
+)
+
+OPTIONS_DOMAINES = [
+    "Un terrain, une maison ou un bien immobilier",
+    "Un passeport",
+    "Le décès d'un fonctionnaire ou une pension",
+    "Je ne sais pas",
+]
+
+REPONSES_DOMAINES = {
+    OPTIONS_DOMAINES[0]: "FONCIER",
+    OPTIONS_DOMAINES[1]: "PASSEPORT",
+    OPTIONS_DOMAINES[2]: "PENSION",
+}
+
+
+# ==========================================================
+# QUESTIONS FONCIÈRES CONNUES
+# ==========================================================
+
+QUESTION_PROPRIETAIRE_TERRAIN = (
+    "Savez-vous à qui appartient le terrain que vous occupez ?"
+)
+
+QUESTION_DOCUMENT_VENDEUR = (
+    "Quel document le vendeur vous a-t-il présenté "
+    "pour prouver ses droits sur ce bien ?"
+)
+
+QUESTION_PROPRIETAIRE_BIEN = (
+    "Le bien appartient-il actuellement à un particulier ?"
+)
+
+QUESTION_USAGE_TERRAIN = (
+    "Le terrain concerné est-il destiné à l'habitation ?"
+)
+
+QUESTION_AMENAGEMENTS = (
+    "Les constructions ou aménagements prévus "
+    "dans votre bail ont-ils été réalisés ?"
+)
+
+# ==========================================================
+# QUESTIONS PASSEPORT CONNUES
+# ==========================================================
+
+QUESTION_PASSEPORT_SENEGALAIS = (
+    "S'agit-il d'un passeport sénégalais ?"
+)
+
+QUESTION_SITUATION_PASSEPORT = (
+    "Quelle est votre situation concernant votre passeport sénégalais ?"
+)
+
+
+# ==========================================================
+# QUESTIONS PENSION / DÉCÈS CONNUES
+# ==========================================================
+
+QUESTION_SITUATION_DECES = (
+    "Au moment de son décès, quelle était la situation de la personne ?"
+)
+
+QUESTION_PENSION_RETRAITE = (
+    "Au moment de son décès, la personne percevait-elle déjà "
+    "une pension de retraite ?"
+)
+
+QUESTION_FONCTIONNAIRE_ACTIVITE = (
+    "Au moment de son décès, la personne travaillait-elle encore "
+    "comme fonctionnaire ?"
+)
+
+
 class OrientationService:
     """Orchestre l'analyse d'une situation administrative."""
 
     def __init__(self):
-        # Réutilise les services déjà initialisés.
         self.retrieval = get_retrieval_service()
         self.llm = get_llm_service()
 
+    # ======================================================
+    # UTILITAIRE : RÉCUPÉRER UNE RÉPONSE
+    # ======================================================
+
+    def _get_reponse(
+        self,
+        reponses: list[dict] | None,
+        texte_question: str,
+    ) -> str | None:
+        """
+        Retourne la dernière réponse fournie
+        à une question précise.
+        """
+
+        for reponse in reversed(reponses or []):
+            if (
+                reponse.get("texte_question")
+                == texte_question
+            ):
+                return reponse.get("contenu")
+
+        return None
+
+    # ======================================================
+    # IDENTIFICATION DU DOMAINE
+    # ======================================================
+
+    def _identifier_domaine(
+        self,
+        situation: str,
+        reponses: list[dict] | None = None,
+    ) -> str | None:
+        """
+        Identifie le domaine administratif
+        lorsque la situation est suffisamment claire.
+        """
+
+        # Priorité à une réponse explicite
+        # à la question de domaine.
+        for reponse in reversed(reponses or []):
+            if (
+                reponse.get("texte_question")
+                == QUESTION_DOMAINE
+            ):
+                return REPONSES_DOMAINES.get(
+                    reponse.get("contenu")
+                )
+
+        texte = situation.casefold()
+
+        domaines_trouves = []
+
+        for domaine, motifs in INDICES_DOMAINES.items():
+            if any(
+                re.search(motif, texte)
+                for motif in motifs
+            ):
+                domaines_trouves.append(domaine)
+
+        if len(domaines_trouves) == 1:
+            return domaines_trouves[0]
+
+        return None
+
+    # ======================================================
+    # CODES AUTORISÉS DU DOMAINE
+    # ======================================================
+
     def _select_relevant_codes(
-    self,
-    contenus: list[dict],
-    demarche_codes: list[str],
-) -> list[str]:
+        self,
+        domaine: str,
+        demarche_codes: list[str],
+    ) -> list[str]:
         """
-        Sélectionne les démarches susceptibles de correspondre
-        aux sources retrouvées par le RAG.
-
-        Si aucun domaine connu n'est identifié, tous les codes
-        autorisés sont conservés par sécurité.
+        Conserve uniquement les codes autorisés par Django
+        appartenant au domaine identifié.
         """
 
-        source_ids = {
-            contenu["source_id"]
-            for contenu in contenus
-        }
+        codes_domaine = DOMAINES_CODES.get(
+            domaine,
+            set(),
+        )
 
-        codes_pertinents = set()
-
-        # Passeport.
-
-        # Dès qu'une source passeport est retrouvée,
-        # on conserve les trois démarches possibles.
-        # Le LLM déterminera ensuite l'intention exacte
-        # de l'utilisateur ou demandera une précision.
-        if any(
-            source_id.startswith("PASSEPORT_")
-            for source_id in source_ids
-        ):
-            codes_pertinents.update({
-                "DEMANDE_PASSEPORT_ORDINAIRE",
-                "RENOUVELLEMENT_PASSEPORT",
-                "PASSEPORT_PERDU_OU_VOLE",
-            })
-
-        # Pension / décès.
-        if any(
-            source_id.startswith("DECES_")
-            for source_id in source_ids
-        ):
-            codes_pertinents.update({
-                "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE",
-                "REVERSION_PENSION_APRES_RETRAITE",
-            })
-
-        # Foncier.
-        #
-        # Les différentes sources foncières peuvent correspondre
-        # à l'obtention d'un bail, à l'acquisition d'un bien
-        # déjà titré ou à la transformation d'un bail
-        # en titre foncier.
-        if any(
-            source_id.startswith((
-                "REGULARISATION_",
-                "ACQUISITION_",
-                "ETAT_DROITS_REELS_",
-                "TRANSFORMATION_BAIL_TITRE_FONCIER_",
-            ))
-            for source_id in source_ids
-        ):
-            codes_pertinents.update({
-                "REGULARISATION_BAIL",
-                "ACQUISITION_MUTATION_TITRE_FONCIER",
-                "TRANSFORMATION_BAIL_EN_TITRE_FONCIER",
-            })
-
-        # Si aucun domaine n'a été reconnu,
-        # on conserve tous les codes autorisés.
-        if not codes_pertinents:
-            return demarche_codes
-
-        # Conserve uniquement les codes réellement autorisés
-        # par Django et respecte leur ordre d'origine.
         return [
             code
             for code in demarche_codes
-            if code in codes_pertinents
+            if code in codes_domaine
         ]
+
+
+    def _traiter_reponses_passeport(
+        self,
+        situation: str,
+        reponses: list[dict] | None,
+    ):
+        """
+        Traite directement les réponses passeport
+        lorsque la règle métier est déjà connue.
+        """
+
+        passeport_senegalais = self._get_reponse(
+            reponses,
+            QUESTION_PASSEPORT_SENEGALAIS,
+        )
+
+        # --------------------------------------------------
+        # VÉRIFIER S'IL S'AGIT D'UN PASSEPORT SÉNÉGALAIS
+        # --------------------------------------------------
+
+        if passeport_senegalais == "Non":
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Les démarches de passeport actuellement "
+                    "couvertes par AdmiGuide concernent "
+                    "le passeport sénégalais."
+                ),
+            )
+
+        if passeport_senegalais == "Je ne sais pas":
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Vous ne savez pas encore si le passeport "
+                    "concerné est un passeport sénégalais. "
+                    "Cette information est nécessaire pour "
+                    "identifier la démarche adaptée. "
+                    "AdmiGuide pourra vous accompagner pour "
+                    "savoir comment vérifier cette information."
+                ),
+            )
+
+        # --------------------------------------------------
+        # PASSEPORT SÉNÉGALAIS CONFIRMÉ
+        # --------------------------------------------------
+
+        if passeport_senegalais == "Oui":
+
+            situation_passeport = self._get_reponse(
+                reponses,
+                QUESTION_SITUATION_PASSEPORT,
+            )
+
+            # L'intention n'est pas encore connue.
+            if situation_passeport is None:
+                return PrecisionsRequisesResponse(
+                    statut="PRECISIONS_REQUISES",
+                    questions=[
+                        QuestionComplementaireResponse(
+                            texte=QUESTION_SITUATION_PASSEPORT,
+                            type_question="CHOIX_UNIQUE",
+                            options=[
+                                (
+                                    "Je souhaite demander un passeport "
+                                    "pour la première fois"
+                                ),
+                                (
+                                    "Je souhaite renouveler "
+                                    "mon passeport"
+                                ),
+                                (
+                                    "J'ai perdu ou on m'a volé "
+                                    "mon passeport"
+                                ),
+                                "Autre situation",
+                            ],
+                        )
+                    ],
+                )
+
+            if (
+                situation_passeport
+                == "Je souhaite demander un passeport pour la première fois"
+            ):
+                return OrientationResponse(
+                    statut="ORIENTATION",
+                    demarche_code="DEMANDE_PASSEPORT_ORDINAIRE",
+                    resume=(
+                        f"{situation.strip()} "
+                        "L'utilisateur confirme qu'il s'agit "
+                        "d'un passeport sénégalais et souhaite "
+                        "effectuer une première demande."
+                    ),
+                    avertissement="",
+                )
+
+            if (
+                situation_passeport
+                == "Je souhaite renouveler mon passeport"
+            ):
+                return OrientationResponse(
+                    statut="ORIENTATION",
+                    demarche_code="RENOUVELLEMENT_PASSEPORT",
+                    resume=(
+                        f"{situation.strip()} "
+                        "L'utilisateur confirme qu'il s'agit "
+                        "d'un passeport sénégalais et souhaite "
+                        "le renouveler."
+                    ),
+                    avertissement="",
+                )
+
+            if (
+                situation_passeport
+                == "J'ai perdu ou on m'a volé mon passeport"
+            ):
+                return OrientationResponse(
+                    statut="ORIENTATION",
+                    demarche_code="PASSEPORT_PERDU_OU_VOLE",
+                    resume=(
+                        f"{situation.strip()} "
+                        "L'utilisateur confirme qu'il s'agit "
+                        "d'un passeport sénégalais qui a été "
+                        "perdu ou volé."
+                    ),
+                    avertissement="",
+                )
+
+            if situation_passeport == "Autre situation":
+                return SourcesInsuffisantesResponse(
+                    statut="SOURCES_INSUFFISANTES",
+                    message=(
+                        "La situation décrite ne correspond pas "
+                        "aux démarches de passeport actuellement "
+                        "couvertes par AdmiGuide."
+                    ),
+                )
+
+        return None
+
+
+    def _traiter_reponses_pension(
+        self,
+        situation: str,
+        reponses: list[dict] | None,
+    ):
+        """
+        Traite directement les réponses pension / décès
+        lorsque la règle métier est déjà connue.
+        """
+
+        situation_deces = self._get_reponse(
+            reponses,
+            QUESTION_SITUATION_DECES,
+        )
+
+        # --------------------------------------------------
+        # SITUATION CONNUE AU MOMENT DU DÉCÈS
+        # --------------------------------------------------
+
+        if situation_deces == "Elle était fonctionnaire en activité":
+            return OrientationResponse(
+                statut="ORIENTATION",
+                demarche_code=(
+                    "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE"
+                ),
+                resume=(
+                    f"{situation.strip()} "
+                    "La personne était fonctionnaire en activité "
+                    "au moment de son décès."
+                ),
+                avertissement="",
+            )
+
+        if situation_deces == "Elle était fonctionnaire à la retraite":
+            return OrientationResponse(
+                statut="ORIENTATION",
+                demarche_code=(
+                    "REVERSION_PENSION_APRES_RETRAITE"
+                ),
+                resume=(
+                    f"{situation.strip()} "
+                    "La personne était fonctionnaire à la retraite "
+                    "au moment de son décès."
+                ),
+                avertissement="",
+            )
+
+        if situation_deces == "Elle n'était pas fonctionnaire":
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Les démarches de pension après décès actuellement "
+                    "couvertes par AdmiGuide concernent le décès "
+                    "d'un fonctionnaire en activité ou à la retraite."
+                ),
+            )
+
+        # --------------------------------------------------
+        # PREMIER "JE NE SAIS PAS"
+        # --------------------------------------------------
+
+        if situation_deces == "Je ne sais pas":
+
+            pension_retraite = self._get_reponse(
+                reponses,
+                QUESTION_PENSION_RETRAITE,
+            )
+
+            # Pose une question plus concrète.
+            if pension_retraite is None:
+                return PrecisionsRequisesResponse(
+                    statut="PRECISIONS_REQUISES",
+                    questions=[
+                        QuestionComplementaireResponse(
+                            texte=QUESTION_PENSION_RETRAITE,
+                            type_question="CHOIX_UNIQUE",
+                            options=[
+                                "Oui",
+                                "Non",
+                                "Je ne sais pas",
+                            ],
+                        )
+                    ],
+                )
+
+            if pension_retraite == "Oui":
+                return OrientationResponse(
+                    statut="ORIENTATION",
+                    demarche_code=(
+                        "REVERSION_PENSION_APRES_RETRAITE"
+                    ),
+                    resume=(
+                        f"{situation.strip()} "
+                        "La personne percevait déjà une pension "
+                        "de retraite au moment de son décès."
+                    ),
+                    avertissement="",
+                )
+
+            # --------------------------------------------------
+            # ELLE NE PERCEVAIT PAS ENCORE DE PENSION
+            # --------------------------------------------------
+
+            if pension_retraite == "Non":
+
+                fonctionnaire_activite = self._get_reponse(
+                    reponses,
+                    QUESTION_FONCTIONNAIRE_ACTIVITE,
+                )
+
+                if fonctionnaire_activite is None:
+                    return PrecisionsRequisesResponse(
+                        statut="PRECISIONS_REQUISES",
+                        questions=[
+                            QuestionComplementaireResponse(
+                                texte=QUESTION_FONCTIONNAIRE_ACTIVITE,
+                                type_question="CHOIX_UNIQUE",
+                                options=[
+                                    "Oui",
+                                    "Non",
+                                    "Je ne sais pas",
+                                ],
+                            )
+                        ],
+                    )
+
+                if fonctionnaire_activite == "Oui":
+                    return OrientationResponse(
+                        statut="ORIENTATION",
+                        demarche_code=(
+                            "REVERSION_PENSION_CAPITAL_DECES_ACTIVITE"
+                        ),
+                        resume=(
+                            f"{situation.strip()} "
+                            "La personne travaillait encore comme "
+                            "fonctionnaire au moment de son décès."
+                        ),
+                        avertissement="",
+                    )
+
+                if fonctionnaire_activite == "Non":
+                    return SourcesInsuffisantesResponse(
+                        statut="SOURCES_INSUFFISANTES",
+                        message=(
+                            "La personne ne percevait pas encore "
+                            "de pension de retraite et ne travaillait "
+                            "plus comme fonctionnaire au moment de son "
+                            "décès. Les démarches actuellement couvertes "
+                            "par AdmiGuide ne permettent donc pas "
+                            "d'identifier une procédure adaptée."
+                        ),
+                    )
+
+                if fonctionnaire_activite == "Je ne sais pas":
+                    return SourcesInsuffisantesResponse(
+                        statut="SOURCES_INSUFFISANTES",
+                        message=(
+                            "Vous ne savez pas encore si la personne "
+                            "travaillait comme fonctionnaire au moment "
+                            "de son décès. Cette information est "
+                            "nécessaire pour identifier la démarche "
+                            "adaptée. AdmiGuide pourra vous accompagner "
+                            "pour savoir comment vérifier cette "
+                            "information."
+                        ),
+                    )
+
+            if pension_retraite == "Je ne sais pas":
+                return SourcesInsuffisantesResponse(
+                    statut="SOURCES_INSUFFISANTES",
+                    message=(
+                        "Vous ne savez pas encore si la personne "
+                        "percevait une pension de retraite au moment "
+                        "de son décès. Cette information est nécessaire "
+                        "pour identifier la démarche adaptée. "
+                        "AdmiGuide pourra vous accompagner pour savoir "
+                        "comment la vérifier."
+                    ),
+                )
+
+        return None
+    
+    # ======================================================
+    # RÈGLES DÉTERMINISTES : FONCIER
+    # ======================================================
+
+    def _traiter_reponses_foncieres(
+        self,
+        situation: str,
+        reponses: list[dict] | None,
+    ):
+        """
+        Traite directement les réponses foncières
+        lorsque la règle métier est déjà connue.
+
+        Cela évite un nouvel appel Groq inutile.
+        """
+
+        # --------------------------------------------------
+        # 1. RÉGULARISATION PAR VOIE DE BAIL
+        # --------------------------------------------------
+
+        proprietaire_terrain = self._get_reponse(
+            reponses,
+            QUESTION_PROPRIETAIRE_TERRAIN,
+        )
+
+        if proprietaire_terrain == "À l'État":
+            return OrientationResponse(
+                statut="ORIENTATION",
+                demarche_code="REGULARISATION_BAIL",
+                resume=(
+                    f"{situation.strip()} "
+                    "L'utilisateur indique que le terrain "
+                    "appartient à l'État."
+                ),
+                avertissement=(
+                    "Cette orientation est indicative. "
+                    "Le Bureau des Domaines compétent devra "
+                    "confirmer que le terrain relève du domaine "
+                    "privé de l'État et qu'il peut faire "
+                    "l'objet d'un bail."
+                ),
+            )
+
+        if proprietaire_terrain == "À un particulier":
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Le terrain appartient à un particulier. "
+                    "La régularisation par voie de bail "
+                    "actuellement couverte par AdmiGuide "
+                    "concerne les terrains relevant du domaine "
+                    "privé de l'État."
+                ),
+            )
+
+        if proprietaire_terrain == "Je ne sais pas":
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Vous ne savez pas encore à qui appartient "
+                    "le terrain que vous occupez. Cette information "
+                    "est nécessaire pour identifier la démarche "
+                    "adaptée. AdmiGuide pourra vous accompagner "
+                    "pour savoir comment vérifier la situation "
+                    "juridique du terrain."
+                ),
+            )
+
+        # --------------------------------------------------
+        # 2. ACQUISITION / MUTATION TITRE FONCIER
+        # --------------------------------------------------
+
+        document_vendeur = self._get_reponse(
+            reponses,
+            QUESTION_DOCUMENT_VENDEUR,
+        )
+
+        if document_vendeur == "Un titre foncier":
+
+            proprietaire_bien = self._get_reponse(
+                reponses,
+                QUESTION_PROPRIETAIRE_BIEN,
+            )
+
+            # Le titre existe mais il manque encore
+            # une information.
+            if proprietaire_bien is None:
+                return PrecisionsRequisesResponse(
+                    statut="PRECISIONS_REQUISES",
+                    questions=[
+                        QuestionComplementaireResponse(
+                            texte=QUESTION_PROPRIETAIRE_BIEN,
+                            type_question="CHOIX_UNIQUE",
+                            options=[
+                                "Oui",
+                                "Non",
+                                "Je ne sais pas",
+                            ],
+                        )
+                    ],
+                )
+
+            if proprietaire_bien == "Oui":
+                return OrientationResponse(
+                    statut="ORIENTATION",
+                    demarche_code=(
+                        "ACQUISITION_MUTATION_TITRE_FONCIER"
+                    ),
+                    resume=(
+                        f"{situation.strip()} "
+                        "Le vendeur a présenté un titre foncier "
+                        "et le bien appartient actuellement "
+                        "à un particulier."
+                    ),
+                    avertissement="",
+                )
+
+            if proprietaire_bien == "Non":
+                return SourcesInsuffisantesResponse(
+                    statut="SOURCES_INSUFFISANTES",
+                    message=(
+                        "Le bien ne correspond pas au parcours "
+                        "d'acquisition d'un titre foncier "
+                        "appartenant à un particulier actuellement "
+                        "couvert par AdmiGuide."
+                    ),
+                )
+
+            if proprietaire_bien == "Je ne sais pas":
+                return SourcesInsuffisantesResponse(
+                    statut="SOURCES_INSUFFISANTES",
+                    message=(
+                        "Il faut d'abord vérifier qui est le "
+                        "propriétaire actuellement inscrit pour "
+                        "ce bien avant de poursuivre l'orientation."
+                    ),
+                )
+
+        if document_vendeur == "Un bail":
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Le vendeur vous a présenté un bail. "
+                    "La cession d'un bien ou d'un droit détenu "
+                    "sous bail correspond à une procédure "
+                    "différente qui n'est pas encore couverte "
+                    "par les démarches disponibles dans AdmiGuide."
+                ),
+            )
+
+        if (
+            document_vendeur
+            == "Un autre document d'occupation ou d'attribution"
+        ):
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Le vendeur vous a présenté un autre document "
+                    "d'occupation ou d'attribution. La procédure "
+                    "à suivre dépend de la nature exacte de ce "
+                    "document et n'est pas encore couverte par "
+                    "les démarches disponibles dans AdmiGuide."
+                ),
+            )
+
+        if document_vendeur in {
+            "Aucun document ne m'a été présenté",
+            "Je ne sais pas",
+        }:
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Avant de vous orienter vers une procédure "
+                    "d'achat, il faut identifier le droit existant "
+                    "sur le bien. Demandez au vendeur le document "
+                    "foncier correspondant : titre foncier, bail "
+                    "ou autre titre d'occupation. Si le bien possède "
+                    "un titre foncier, AdmiGuide pourra ensuite "
+                    "vous orienter vers la procédure d'acquisition "
+                    "et de mutation."
+                ),
+            )
+
+        # --------------------------------------------------
+        # 3. TRANSFORMATION BAIL → TITRE FONCIER
+        # --------------------------------------------------
+
+        usage_terrain = self._get_reponse(
+            reponses,
+            QUESTION_USAGE_TERRAIN,
+        )
+
+        if usage_terrain == "Oui":
+
+            amenagements = self._get_reponse(
+                reponses,
+                QUESTION_AMENAGEMENTS,
+            )
+
+            # Première condition validée :
+            # on pose directement la deuxième question
+            # sans rappeler Groq.
+            if amenagements is None:
+                return PrecisionsRequisesResponse(
+                    statut="PRECISIONS_REQUISES",
+                    questions=[
+                        QuestionComplementaireResponse(
+                            texte=QUESTION_AMENAGEMENTS,
+                            type_question="CHOIX_UNIQUE",
+                            options=[
+                                "Oui",
+                                "Non",
+                                "Je ne sais pas",
+                            ],
+                        )
+                    ],
+                )
+
+            if amenagements == "Oui":
+                return OrientationResponse(
+                    statut="ORIENTATION",
+                    demarche_code=(
+                        "TRANSFORMATION_BAIL_EN_TITRE_FONCIER"
+                    ),
+                    resume=(
+                        f"{situation.strip()} "
+                        "Le terrain est destiné à l'habitation "
+                        "et les constructions ou aménagements "
+                        "prévus dans le bail ont été réalisés."
+                    ),
+                    avertissement="",
+                )
+
+            if amenagements == "Non":
+                return SourcesInsuffisantesResponse(
+                    statut="SOURCES_INSUFFISANTES",
+                    message=(
+                        "Les constructions ou aménagements "
+                        "prévus dans le bail ne sont pas encore "
+                        "réalisés. AdmiGuide ne peut donc pas "
+                        "confirmer cette orientation."
+                    ),
+                )
+
+            if amenagements == "Je ne sais pas":
+                return SourcesInsuffisantesResponse(
+                    statut="SOURCES_INSUFFISANTES",
+                    message=(
+                        "Il faut vérifier si les constructions "
+                        "ou aménagements prévus dans votre bail "
+                        "ont été réalisés avant de confirmer "
+                        "cette orientation."
+                    ),
+                )
+
+        if usage_terrain == "Non":
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Le terrain n'est pas destiné à l'habitation. "
+                    "La procédure de transformation actuellement "
+                    "couverte par AdmiGuide ne correspond donc "
+                    "pas à cette situation."
+                ),
+            )
+
+        if usage_terrain == "Je ne sais pas":
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "L'usage prévu du terrain doit être vérifié "
+                    "avant de confirmer cette orientation."
+                ),
+            )
+
+        # Aucune réponse métier déterministe
+        # n'est encore disponible.
+        return None
+
+    # ======================================================
+    # ANALYSE PRINCIPALE
+    # ======================================================
 
     async def analyze(
         self,
@@ -107,26 +869,128 @@ class OrientationService:
     ):
         """Analyse une situation et retourne un résultat métier validé."""
 
-        # Recherche une seule fois les passages officiels pertinents.
-        contenus = self.retrieval.retrieve(
-            texte=situation,
+        # --------------------------------------------------
+        # 1. IDENTIFIER LE DOMAINE
+        # --------------------------------------------------
+
+        domaine = self._identifier_domaine(
+            situation=situation,
+            reponses=reponses,
         )
 
-        # Construit le contexte à partir des résultats déjà récupérés.
+        # Domaine ambigu :
+        # demander une précision avant d'utiliser le RAG.
+        if domaine is None:
+
+            question_deja_posee = any(
+                reponse.get("texte_question")
+                == QUESTION_DOMAINE
+                for reponse in (reponses or [])
+            )
+
+            if question_deja_posee:
+                return SourcesInsuffisantesResponse(
+                    statut="SOURCES_INSUFFISANTES",
+                    message=(
+                        "Nous ne pouvons pas encore identifier "
+                        "le domaine de votre demande. "
+                        "Précisez ce que vous souhaitez faire "
+                        "pour obtenir une orientation adaptée."
+                    ),
+                )
+
+            return PrecisionsRequisesResponse(
+                statut="PRECISIONS_REQUISES",
+                questions=[
+                    QuestionComplementaireResponse(
+                        texte=QUESTION_DOMAINE,
+                        type_question="CHOIX_UNIQUE",
+                        options=OPTIONS_DOMAINES,
+                    )
+                ],
+            )
+
+        # --------------------------------------------------
+        # 2. CODES DU DOMAINE
+        # --------------------------------------------------
+
+        codes_pertinents = self._select_relevant_codes(
+            domaine=domaine,
+            demarche_codes=demarche_codes,
+        )
+
+        if not codes_pertinents:
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Aucune démarche disponible dans AdmiGuide "
+                    "ne correspond actuellement à ce domaine."
+                ),
+            )
+
+        # --------------------------------------------------
+        # 3. RÈGLES DÉTERMINISTES
+        # --------------------------------------------------
+
+        resultat_deterministe = None
+
+        if domaine == "PASSEPORT":
+            resultat_deterministe = (
+                self._traiter_reponses_passeport(
+                    situation=situation,
+                    reponses=reponses,
+                )
+            )
+
+        elif domaine == "PENSION":
+            resultat_deterministe = (
+                self._traiter_reponses_pension(
+                    situation=situation,
+                    reponses=reponses,
+                )
+            )
+
+        elif domaine == "FONCIER":
+            resultat_deterministe = (
+                self._traiter_reponses_foncieres(
+                    situation=situation,
+                    reponses=reponses,
+                )
+            )
+
+        # Si Python connaît déjà la décision métier,
+        # aucun appel Groq supplémentaire n'est nécessaire.
+        if resultat_deterministe is not None:
+            return resultat_deterministe
+
+        # --------------------------------------------------
+        # 4. RECHERCHE RAG
+        # --------------------------------------------------
+
+        contenus = self.retrieval.retrieve(
+            texte=situation,
+            domaine=domaine,
+        )
+
+        if not contenus:
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "Nous ne disposons pas encore de sources "
+                    "suffisantes pour analyser cette demande."
+                ),
+            )
+
         contexte = (
             self.retrieval.build_context_from_results(
                 contenus
             )
         )
 
-        # Garde uniquement les démarches correspondant
-        # aux domaines retrouvés dans les sources.
-        codes_pertinents = self._select_relevant_codes(
-            contenus=contenus,
-            demarche_codes=demarche_codes,
-        )
+        # --------------------------------------------------
+        # 5. CONSTRUIRE LES PROMPTS
+        # --------------------------------------------------
 
-        # Prépare les instructions du modèle.
         system_prompt = build_system_prompt(
             demarche_codes=codes_pertinents,
         )
@@ -138,17 +1002,39 @@ class OrientationService:
             reponses=reponses,
         )
 
-        # Demande au modèle d'analyser la situation.
+        # --------------------------------------------------
+        # 6. APPEL GROQ
+        # --------------------------------------------------
+
         reponse_brute = await self.llm.generate(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
         )
 
-        # Vérifie la structure et le code de démarche retournés.
-        return parse_llm_response(
+        # --------------------------------------------------
+        # 7. VALIDATION
+        # --------------------------------------------------
+
+        resultat = parse_llm_response(
             reponse_brute,
             demarche_codes=codes_pertinents,
         )
+
+        # Sécurité supplémentaire pour le bail.
+        if (
+            resultat.statut == "ORIENTATION"
+            and resultat.demarche_code
+            == "REGULARISATION_BAIL"
+            and not resultat.avertissement.strip()
+        ):
+            resultat.avertissement = (
+                "Cette orientation est indicative. "
+                "Le Bureau des Domaines compétent devra confirmer "
+                "que le terrain relève du domaine privé de l'État "
+                "et qu'il peut faire l'objet d'un bail."
+            )
+
+        return resultat
 
 
 @lru_cache

@@ -240,8 +240,6 @@ async def analyze(
 
     except ValueError as exc:
 
-        # Une réponse IA invalide ne doit jamais
-        # être transmise telle quelle au frontend.
         raise HTTPException(
             status_code=502,
             detail=(

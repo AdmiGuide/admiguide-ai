@@ -123,21 +123,36 @@ class VectorStoreService:
         self,
         texte: str,
         limit: int = 3,
+        domaine: str | None = None,
     ) -> dict:
-        # Transforme la demande utilisateur en vecteur.
+        """
+        Recherche les sources officielles dans ChromaDB.
+
+        Lorsque le domaine est connu, la recherche
+        est limitée aux documents de ce domaine.
+        """
+
         vecteur = self.embedding_service.encode_query(texte)
-        
-        # La V1 est limitée au Sénégal.
-        # Ce filtre sera supprimé lorsque le corpus Dakar sera entièrement réindexé.
-        filtre = {
-            "pays_application": "SN"
-        }
+
+        if domaine:
+            filtre = {
+                "$and": [
+                    {"pays_application": "SN"},
+                    {"domaine": domaine},
+                ]
+            }
+        else:
+            filtre = {"pays_application": "SN"}
 
         return self.collection.query(
             query_embeddings=[vecteur],
             n_results=limit,
             where=filtre,
-            include=["documents", "metadatas", "distances"],
+            include=[
+                "documents",
+                "metadatas",
+                "distances",
+            ],
         )
 
     # Supprime plusieurs documents à partir de leurs identifiants.

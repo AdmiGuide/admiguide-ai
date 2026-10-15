@@ -13,13 +13,22 @@ class RetrievalService:
 
     # Recherche les contenus pertinents pour une situation utilisateur.
     def retrieve(
-        self,
-        texte: str,
-        limit: int = 3,
+    self,
+    texte: str,
+    limit: int = 3,
+    domaine: str | None = None,
     ) -> list[dict]:
+        """
+        Récupère les passages pertinents.
+
+        Transmet le domaine à ChromaDB lorsqu'il
+        a été identifié.
+        """
+
         resultat = self.vector_store.search(
             texte=texte,
             limit=limit,
+            domaine=domaine,
         )
 
         documents = resultat["documents"][0]
@@ -28,7 +37,6 @@ class RetrievalService:
 
         contenus = []
 
-        # Regroupe chaque texte avec sa source et sa distance.
         for document, metadata, distance in zip(
             documents,
             metadatas,
@@ -40,6 +48,7 @@ class RetrievalService:
                     "source_id": metadata["source_id"],
                     "source_titre": metadata["source_titre"],
                     "source_url": metadata["source_url"],
+                    "domaine": metadata["domaine"],
                     "distance": distance,
                 }
             )
