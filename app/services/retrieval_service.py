@@ -13,45 +13,65 @@ class RetrievalService:
 
     # Recherche les contenus pertinents pour une situation utilisateur.
     def retrieve(
-    self,
-    texte: str,
-    limit: int = 3,
-    domaine: str | None = None,
+        self,
+        texte: str,
+        limit: int = 3,
+        domaine: str | None = None,
     ) -> list[dict]:
         """
-        Récupère les passages pertinents.
+        Recherche les passages pertinents dans ChromaDB.
 
-        Transmet le domaine à ChromaDB lorsqu'il
-        a été identifié.
+        Lorsque le domaine est connu, la recherche est limitée
+        à ce domaine. Les résultats sont ensuite sélectionnés
+        pour éviter plusieurs passages d'une même source.
         """
 
+        # Récupère plusieurs morceaux afin de pouvoir
+        # sélectionner des sources administratives différentes.
         resultat = self.vector_store.search(
             texte=texte,
-            limit=limit,
+            limit=max(8, limit),
             domaine=domaine,
         )
 
+        # Récupère les textes, les métadonnées et les distances.
         documents = resultat["documents"][0]
         metadatas = resultat["metadatas"][0]
         distances = resultat["distances"][0]
 
         contenus = []
+        sources_vues = set()
 
+        # Parcourt les morceaux dans leur ordre de pertinence.
         for document, metadata, distance in zip(
             documents,
             metadatas,
             distances,
         ):
+            source_id = metadata["source_id"]
+
+            # Ignore les passages provenant d'une source
+            # déjà sélectionnée.
+            if source_id in sources_vues:
+                continue
+
+            sources_vues.add(source_id)
+
+            # Prépare les informations nécessaires au contexte RAG.
             contenus.append(
                 {
                     "texte": document,
-                    "source_id": metadata["source_id"],
+                    "source_id": source_id,
                     "source_titre": metadata["source_titre"],
                     "source_url": metadata["source_url"],
                     "domaine": metadata["domaine"],
                     "distance": distance,
                 }
             )
+
+            # Arrête la sélection lorsque la limite est atteinte.
+            if len(contenus) >= limit:
+                break
 
         return contenus
 
@@ -62,7 +82,7 @@ class RetrievalService:
     ) -> str:
         blocs = []
 
-        # Prepare un bloc lisible pour chaque contenu retrouvé.
+        # Prépare un bloc lisible pour chaque contenu retrouvé.
         for index, contenu in enumerate(
             contenus,
             start=1,
@@ -77,9 +97,8 @@ class RetrievalService:
 
             blocs.append(bloc)
 
-        # Separe clairement les differentes sources.
+        # Sépare clairement les différentes sources.
         return "\n\n---\n\n".join(blocs)
-
 
     # Recherche les contenus puis construit le contexte.
     def build_context(

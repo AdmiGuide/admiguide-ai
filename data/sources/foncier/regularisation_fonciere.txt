@@ -283,3 +283,45 @@ de l'acte de cession définitive.
 Le déroulement complet d'un dossier peut également dépendre
 de la complétude du dossier et des opérations foncières
 ou cadastrales nécessaires.
+
+=== SOURCE ===
+ID: TRANSFORMATION_DROITS_OCCUPATION_MINFIN_2026_01
+TITRE: Transformation d'un bail, d'un droit de superficie ou d'une autorisation d'occuper en titre foncier - Ministère des Finances
+URL: https://www.finances.gouv.sn/services-demarches/transformation-dun-bail-en-titre-foncier-SXYgqIuY_L1kggG6fLZQi
+TYPE: PAGE_WEB
+DATE_VERIFICATION: 2026-10-18
+PAYS_APPLICATION: SN
+
+CONTENU:
+Démarche :
+Demander à transformer un droit d'usage sur un terrain en titre foncier, après instruction et validation par l'administration.
+
+Public concerné :
+- Titulaires d'un bail.
+- Titulaires d'un droit de superficie.
+- Bénéficiaires d'une autorisation d'occuper.
+- Personnes physiques ou morales.
+
+Principe :
+Le service permet à l'État de transférer la propriété du terrain au bénéficiaire par établissement d'un titre foncier à son nom. Les contrats concernés portent généralement sur des terrains situés dans des zones couvertes par un plan d'urbanisme.
+
+Pièces annoncées par la fiche :
+- Une demande écrite adressée au Directeur de l'Enregistrement, des Domaines et du Timbre.
+- Une copie certifiée conforme du bail, du certificat d'inscription de bail, du contrat de droit de superficie ou de l'autorisation d'occuper.
+- Une copie certifiée conforme de la carte nationale d'identité, ou un document justifiant le statut de la société pour les personnes morales.
+- Une quittance de paiement des redevances d'occupation.
+
+Étapes :
+- Constituer le dossier et déposer la demande auprès des services compétents de la Direction de l'Enregistrement, des Domaines et du Timbre.
+- L'administration vérifie et étudie le dossier.
+- Le dossier est, le cas échéant, examiné par la commission ad hoc compétente.
+- Après validation, le titre foncier peut être établi au nom du bénéficiaire.
+
+Coût :
+La fiche du ministère indique un coût variable. Le régime de cession gratuite prévu par la loi n° 2017-31 pour certains terrains domaniaux à usage d'habitation est distinct et doit être apprécié selon les conditions propres à cette loi.
+
+Précisions pour l'orientation :
+La fiche ministérielle ne présente pas l'exécution de travaux comme une condition générale applicable à toute autorisation d'occuper. Les conditions exactes dépendent du titre détenu et de la procédure applicable. L'existence d'une autorisation d'occuper ne prouve pas, à elle seule, que la transformation sera accordée : l'administration doit examiner le dossier.
+
+Service compétent :
+Direction générale des Impôts et des Domaines, notamment la Direction de l'Enregistrement, des Domaines et du Timbre et les services territorialement compétents.

@@ -3,6 +3,11 @@ import re
 # Permet de réutiliser la même instance du service.
 from functools import lru_cache
 
+# Service IA chargé de comprendre la demande avant la recherche RAG.
+from app.services.preparation_demande_service import (
+    get_preparation_demande_service,
+)
+
 # Schémas de réponse de l'API.
 from app.schemas.orientation import (
     OrientationResponse,
@@ -39,6 +44,7 @@ DOMAINES_CODES = {
         "REGULARISATION_BAIL",
         "ACQUISITION_MUTATION_TITRE_FONCIER",
         "TRANSFORMATION_BAIL_EN_TITRE_FONCIER",
+        "TRANSFORMATION_AUTORISATION_OCCUPATION_EN_TITRE_FONCIER",
     },
 }
 
@@ -162,8 +168,10 @@ class OrientationService:
     """Orchestre l'analyse d'une situation administrative."""
 
     def __init__(self):
+        # Services de recherche, de préparation et de génération.
         self.retrieval = get_retrieval_service()
         self.llm = get_llm_service()
+        self.preparation = get_preparation_demande_service()
 
     # ======================================================
     # UTILITAIRE : RÉCUPÉRER UNE RÉPONSE
@@ -307,33 +315,10 @@ class OrientationService:
                 reponses,
                 QUESTION_SITUATION_PASSEPORT,
             )
-
-            # L'intention n'est pas encore connue.
+            # Laisse le modèle analyser la description
+            # si aucune réponse explicite n'a été enregistrée.
             if situation_passeport is None:
-                return PrecisionsRequisesResponse(
-                    statut="PRECISIONS_REQUISES",
-                    questions=[
-                        QuestionComplementaireResponse(
-                            texte=QUESTION_SITUATION_PASSEPORT,
-                            type_question="CHOIX_UNIQUE",
-                            options=[
-                                (
-                                    "Je souhaite demander un passeport "
-                                    "pour la première fois"
-                                ),
-                                (
-                                    "Je souhaite renouveler "
-                                    "mon passeport"
-                                ),
-                                (
-                                    "J'ai perdu ou on m'a volé "
-                                    "mon passeport"
-                                ),
-                                "Autre situation",
-                            ],
-                        )
-                    ],
-                )
+                return None
 
             if (
                 situation_passeport
@@ -867,24 +852,54 @@ class OrientationService:
         demarche_codes: list[str],
         reponses: list[dict] | None = None,
     ):
-        """Analyse une situation et retourne un résultat métier validé."""
+        """Analyse la demande avec l'IA et valide l'orientation obtenue."""
 
         # --------------------------------------------------
-        # 1. IDENTIFIER LE DOMAINE
+        # 1. IDENTIFIER LE DOMAINE ET PRÉPARER LA RECHERCHE
         # --------------------------------------------------
 
-        domaine = self._identifier_domaine(
+        # Groq comprend la situation et propose une requête RAG.
+        preparation = await self.preparation.preparer(
             situation=situation,
             reponses=reponses,
         )
 
-        # Domaine ambigu :
-        # demander une précision avant d'utiliser le RAG.
-        if domaine is None:
+        domaine = preparation["domaine"]
+        requete_rag = preparation["requete_rag"]
 
+        # Une réponse explicite de l'utilisateur à la question
+        # de domaine reste prioritaire sur la classification IA.
+        reponse_domaine = self._get_reponse(
+            reponses,
+            QUESTION_DOMAINE,
+        )
+        domaine_choisi = REPONSES_DOMAINES.get(reponse_domaine)
+
+        if domaine_choisi is not None:
+            if domaine_choisi != domaine:
+                # Utilise uniquement la description et le choix
+                # réellement fournis par l'utilisateur.
+                requete_rag = (
+                    f"{situation}\n"
+                    f"Sujet indiqué par l'utilisateur : {reponse_domaine}"
+                )
+            domaine = domaine_choisi
+
+        # L'utilisateur demande une démarche hors du MVP.
+        if domaine == "HORS_COUVERTURE":
+            return SourcesInsuffisantesResponse(
+                statut="SOURCES_INSUFFISANTES",
+                message=(
+                    "AdmiGuide ne couvre pas encore "
+                    "ce type de demande administrative."
+                ),
+            )
+
+        # Une demande trop vague nécessite une seule
+        # question de précision sur le sujet.
+        if domaine == "INDETERMINE":
             question_deja_posee = any(
-                reponse.get("texte_question")
-                == QUESTION_DOMAINE
+                reponse.get("texte_question") == QUESTION_DOMAINE
                 for reponse in (reponses or [])
             )
 
@@ -892,10 +907,9 @@ class OrientationService:
                 return SourcesInsuffisantesResponse(
                     statut="SOURCES_INSUFFISANTES",
                     message=(
-                        "Nous ne pouvons pas encore identifier "
-                        "le domaine de votre demande. "
-                        "Précisez ce que vous souhaitez faire "
-                        "pour obtenir une orientation adaptée."
+                        "Nous ne disposons pas encore "
+                        "d'informations suffisantes pour "
+                        "identifier votre demande."
                     ),
                 )
 
@@ -911,7 +925,7 @@ class OrientationService:
             )
 
         # --------------------------------------------------
-        # 2. CODES DU DOMAINE
+        # 2. LIMITER L'ANALYSE AUX DÉMARCHES AUTORISÉES
         # --------------------------------------------------
 
         codes_pertinents = self._select_relevant_codes(
@@ -929,46 +943,13 @@ class OrientationService:
             )
 
         # --------------------------------------------------
-        # 3. RÈGLES DÉTERMINISTES
+        # 3. RECHERCHER LES SOURCES OFFICIELLES DANS CHROMADB
         # --------------------------------------------------
 
-        resultat_deterministe = None
-
-        if domaine == "PASSEPORT":
-            resultat_deterministe = (
-                self._traiter_reponses_passeport(
-                    situation=situation,
-                    reponses=reponses,
-                )
-            )
-
-        elif domaine == "PENSION":
-            resultat_deterministe = (
-                self._traiter_reponses_pension(
-                    situation=situation,
-                    reponses=reponses,
-                )
-            )
-
-        elif domaine == "FONCIER":
-            resultat_deterministe = (
-                self._traiter_reponses_foncieres(
-                    situation=situation,
-                    reponses=reponses,
-                )
-            )
-
-        # Si Python connaît déjà la décision métier,
-        # aucun appel Groq supplémentaire n'est nécessaire.
-        if resultat_deterministe is not None:
-            return resultat_deterministe
-
-        # --------------------------------------------------
-        # 4. RECHERCHE RAG
-        # --------------------------------------------------
-
+        # Utilise la requête reformulée par Groq et le domaine
+        # identifié pour retrouver les sources pertinentes.
         contenus = self.retrieval.retrieve(
-            texte=situation,
+            texte=requete_rag,
             domaine=domaine,
         )
 
@@ -981,20 +962,21 @@ class OrientationService:
                 ),
             )
 
-        contexte = (
-            self.retrieval.build_context_from_results(
-                contenus
-            )
+        contexte = self.retrieval.build_context_from_results(
+            contenus
         )
 
         # --------------------------------------------------
-        # 5. CONSTRUIRE LES PROMPTS
+        # 4. PRÉPARER LA DEMANDE POUR LE MODÈLE
         # --------------------------------------------------
 
+        # Conserve les règles métier adaptées au domaine.
         system_prompt = build_system_prompt(
             demarche_codes=codes_pertinents,
         )
 
+        # Transmet la description initiale, les réponses précédentes
+        # et les documents officiels retrouvés par le RAG.
         user_prompt = build_user_prompt(
             situation=situation,
             contexte=contexte,
@@ -1003,7 +985,7 @@ class OrientationService:
         )
 
         # --------------------------------------------------
-        # 6. APPEL GROQ
+        # 5. LAISSER L'IA IDENTIFIER LA DÉMARCHE
         # --------------------------------------------------
 
         reponse_brute = await self.llm.generate(
@@ -1012,19 +994,21 @@ class OrientationService:
         )
 
         # --------------------------------------------------
-        # 7. VALIDATION
+        # 6. VALIDER LE RÉSULTAT AVANT DE LE RENVOYER
         # --------------------------------------------------
 
+        # Le parseur refuse notamment les codes de démarches
+        # qui ne sont pas autorisés par le backend.
         resultat = parse_llm_response(
             reponse_brute,
             demarche_codes=codes_pertinents,
         )
 
-        # Sécurité supplémentaire pour le bail.
+        # Conserve l'avertissement obligatoire pour la
+        # régularisation d'un terrain par voie de bail.
         if (
             resultat.statut == "ORIENTATION"
-            and resultat.demarche_code
-            == "REGULARISATION_BAIL"
+            and resultat.demarche_code == "REGULARISATION_BAIL"
             and not resultat.avertissement.strip()
         ):
             resultat.avertissement = (
