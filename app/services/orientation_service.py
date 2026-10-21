@@ -962,6 +962,43 @@ class OrientationService:
                 ),
             )
 
+        # Gérer les réponses incertaines pour les pensions
+        if (
+            domaine == "PENSION"
+            and self._get_reponse(
+                reponses,
+                QUESTION_SITUATION_DECES,
+            ) == "Je ne sais pas"
+        ):
+            resultat_pension = self._traiter_reponses_pension(
+                situation=situation,
+                reponses=reponses,
+            )
+
+            if (
+                resultat_pension is not None
+                and resultat_pension.statut in {
+                    "PRECISIONS_REQUISES",
+                    "SOURCES_INSUFFISANTES",
+                }
+            ):
+                return resultat_pension
+
+        # Traiter les réponses concernant le document du vendeur.
+        if (
+            domaine == "FONCIER"
+            and self._get_reponse(
+                reponses,
+                QUESTION_DOCUMENT_VENDEUR,
+            ) is not None
+        ):
+            resultat_foncier = self._traiter_reponses_foncieres(
+                situation=situation,
+                reponses=reponses,
+            )
+
+            if resultat_foncier is not None:
+                return resultat_foncier
         contexte = self.retrieval.build_context_from_results(
             contenus
         )

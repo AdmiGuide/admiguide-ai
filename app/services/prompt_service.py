@@ -98,25 +98,6 @@ Options exactes : ["Oui", "Non", "Je ne sais pas"]
 - Si une information indispensable demeure inconnue après ces
   précisions : SOURCES_INSUFFISANTES, sans répéter les questions.
 
-2. Vérifie le lien de l'utilisateur avec la personne décédée,
-uniquement une fois la situation professionnelle établie.
-- « Mon père », « ma mère », « mon mari », « ma femme », etc. :
-  le lien est déjà connu, ne repose pas de question.
-- « Un membre de ma famille » ne précise pas ce lien.
-- Si le lien manque et que l'utilisateur n'y a pas déjà répondu,
-  retourne PRECISIONS_REQUISES avec cette seule question :
-"Quel lien avez-vous avec la personne décédée ?"
-Options exactes :
-["C'était mon mari ou ma femme",
- "C'était mon père ou ma mère",
- "C'était mon fils ou ma fille",
- "C'était mon frère ou ma sœur",
- "C'était un autre membre de ma famille",
- "Je fais la démarche pour une autre personne",
- "Autre situation"]
-- Après réponse, ne repose pas la question : utilise les faits connus
-  pour choisir la démarche correspondant à l'activité ou à la retraite.
-
 Le lien familial ne prouve pas que l'utilisateur est bénéficiaire.
 Les sources mentionnent les ayants-cause et les mandataires :
 ne confirme jamais un droit personnel sans preuve officielle.
@@ -399,9 +380,8 @@ QUESTIONS COMPLÉMENTAIRES :
 - Ne redemande jamais une information déjà clairement fournie.
 - Vérifie d'abord les conditions fondamentales de la démarche,
   dans l'ordre précisé par ses règles métier.
-- Pose uniquement les questions utiles pour identifier la démarche,
-  vérifier son applicabilité et, pour les pensions après décès,
-  connaître le lien de l'utilisateur avec le défunt.
+- Pose uniquement les questions utiles pour identifier la démarche
+  et vérifier son applicabilité.
 - Pose une seule question à la fois lorsqu'un ordre est indiqué.
   Jamais plus de deux questions dans une réponse.
 - Une question porte sur une seule information, avec un vocabulaire
