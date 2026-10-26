@@ -1,6 +1,6 @@
 === SOURCE ===
 ID: PASSEPORT_DAKAR_PREMIERE_DEMANDE_01
-TITRE: Première demande de passeport ordinaire - Sénégal / Dakar
+TITRE: Première demande de passeport ordinaire - Sénégal
 URL: https://www.interieur.gouv.sn/services/services-aux-usagers/passeport-ordinaire
 TYPE: PAGE_WEB
 DATE_VERIFICATION: 2026-10-13
@@ -11,8 +11,9 @@ Démarche :
 Demander un passeport ordinaire sénégalais.
 
 Portée :
-Cette source constitue la référence principale pour le parcours
-d'un particulier résidant au Sénégal, notamment à Dakar.
+Cette source présente les règles générales de demande de passeport
+pour une personne résidant au Sénégal.
+Les modalités de rendez-vous décrites plus bas sont propres à Dakar.
 
 Bénéficiaires :
 Tout citoyen sénégalais peut demander un passeport ordinaire
@@ -71,7 +72,7 @@ annoncé à 2 semaines.
 
 === SOURCE ===
 ID: PASSEPORT_DAKAR_RENOUVELLEMENT_01
-TITRE: Renouvellement d'un passeport ordinaire - Sénégal / Dakar
+TITRE: Renouvellement d'un passeport ordinaire - Sénégal
 URL: https://www.interieur.gouv.sn/services/services-aux-usagers/passeport-ordinaire
 TYPE: PAGE_WEB
 DATE_VERIFICATION: 2026-10-13
@@ -82,8 +83,9 @@ Démarche :
 Renouveler un passeport ordinaire sénégalais existant.
 
 Portée :
-Cette source constitue la référence principale pour le renouvellement
-d'un passeport d'un particulier résidant au Sénégal, notamment à Dakar.
+Cette source présente les règles générales de renouvellement
+pour une personne résidant au Sénégal.
+Les modalités de rendez-vous décrites plus bas sont propres à Dakar.
 
 Validité :
 La durée de validité indiquée pour un passeport est de 4 ans.
@@ -129,7 +131,7 @@ du passeport, annoncé à 2 semaines.
 
 === SOURCE ===
 ID: PASSEPORT_DAKAR_PERTE_VOL_01
-TITRE: Passeport sénégalais perdu ou volé - Sénégal / Dakar
+TITRE: Passeport sénégalais perdu ou volé - Sénégal
 URL: https://www.interieur.gouv.sn/services/services-aux-usagers/passeport-ordinaire
 TYPE: PAGE_WEB
 DATE_VERIFICATION: 2026-10-13
@@ -140,8 +142,9 @@ Démarche :
 Refaire un passeport sénégalais après une perte ou un vol.
 
 Portée :
-Cette source constitue la référence principale pour un particulier
-résidant au Sénégal, notamment à Dakar.
+Cette source présente les règles générales en cas de perte ou de vol
+pour une personne résidant au Sénégal.
+Les modalités de rendez-vous décrites plus bas sont propres à Dakar.
 
 En cas de perte ou de vol :
 Le demandeur doit effectuer une déclaration de perte,
@@ -196,12 +199,12 @@ de l'Extérieur.
 Portée dans AdmiGuide :
 Cette source est utilisée comme complément documentaire.
 
-Pour un particulier résidant à Dakar, elle ne doit pas remplacer
-les modalités territoriales publiées par le Ministère de l'Intérieur.
+Pour un résident du Sénégal, elle ne doit pas remplacer
+les modalités de dépôt publiées par le Ministère de l'Intérieur.
 
 Les éléments propres à la résidence à l'étranger ne doivent pas
-être présentés automatiquement comme des exigences du parcours Dakar
-lorsqu'ils ne sont pas confirmés par une source applicable à Dakar.
+être présentés automatiquement comme des exigences au Sénégal
+sans confirmation par une source applicable sur le territoire national.
 
 Première demande :
 La DGSE indique notamment les éléments suivants :
@@ -231,9 +234,9 @@ Autres cas particuliers mentionnés :
 
 Limite d'utilisation dans AdmiGuide :
 Les informations de cette source qui ne sont pas confirmées
-par une source applicable au parcours Dakar doivent rester
+par une source applicable au Sénégal doivent rester
 des informations complémentaires et ne pas être ajoutées
-automatiquement aux pièces obligatoires de l'orientation Dakar.
+automatiquement aux pièces obligatoires d'une orientation au Sénégal.
 
 
 === SOURCE ===
@@ -253,11 +256,11 @@ Portée dans AdmiGuide :
 Cette source complète les informations relatives aux différents
 cas de renouvellement.
 
-Pour un particulier résidant à Dakar, elle ne doit pas remplacer
+Pour un résident du Sénégal, elle ne doit pas remplacer
 les modalités territoriales du Ministère de l'Intérieur.
 
 Les éléments propres à la résidence à l'étranger ne doivent pas
-être considérés automatiquement comme obligatoires pour Dakar.
+être considérés automatiquement comme obligatoires au Sénégal.
 
 Cas 1 : passeport expiré
 
@@ -277,7 +280,7 @@ La DGSE indique notamment :
   ou à la cession du nom marital ;
 - un justificatif de domicile.
 
-Complément utile pour le parcours Dakar :
+Complément utile pour le parcours au Sénégal :
 L'attestation de perte délivrée par un commissariat précise
 la nature du document résultant de la déclaration de perte
 mentionnée par le Ministère de l'Intérieur.
@@ -304,8 +307,8 @@ Limite d'utilisation dans AdmiGuide :
 Le justificatif de domicile et les autres éléments qui pourraient
 être propres au contexte des Sénégalais de l'extérieur ne doivent
 pas être ajoutés automatiquement aux pièces obligatoires
-du parcours Dakar sans confirmation par une source applicable
-au Sénégal.
+d'une orientation au Sénégal sans confirmation par une source
+applicable sur le territoire sénégalais.
 
 
 === SOURCE ===
@@ -429,5 +432,5 @@ Elle indique également un délai de rendez-vous
 de 1 à 15 jours, tandis que le Ministère de l'Intérieur
 indique actuellement 2 à 25 jours.
 
-Pour l'orientation Dakar, AdmiGuide utilise les informations
+Pour les orientations au Sénégal, AdmiGuide privilégie les informations
 du Ministère de l'Intérieur lorsque ces valeurs sont contradictoires.
