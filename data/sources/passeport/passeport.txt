@@ -433,4 +433,4 @@ de 1 à 15 jours, tandis que le Ministère de l'Intérieur
 indique actuellement 2 à 25 jours.
 
 Pour les orientations au Sénégal, AdmiGuide privilégie les informations
-du Ministère de l'Intérieur lorsque ces valeurs sont contradictoires.
+du Ministère de l'Intérieur lorsque ces valeurs sont contradictoires..
