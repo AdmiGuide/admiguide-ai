@@ -132,6 +132,37 @@ class TestsSuiviLocalite(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('préciser la localité', reponse.reponse)
         self.assertNotIn('Liste de démarches', reponse.reponse)
 
+    async def test_localite_deja_presente_dans_situation(self):
+        """Le chatbot réutilise Pikine sans redemander la localité."""
+
+        d = demande(
+            "Où se trouve le Bureau des Domaines compétent pour mon terrain ?"
+        )
+        d.situation = (
+            "J'occupe un terrain situé à Pikine, au Sénégal. "
+            "Je dispose d'une autorisation d'occupation."
+        )
+
+        async def simuler_groq(**kwargs):
+            self.assertTrue(kwargs["utiliser_recherche_web"])
+            self.assertIn("Bureau des Domaines", kwargs["user_prompt"])
+            self.assertIn("Pikine", kwargs["user_prompt"])
+
+            # Ne transmet pas la situation personnelle complète.
+            self.assertNotIn("J'occupe un terrain", kwargs["user_prompt"])
+
+            return "Adresse non vérifiée."
+
+        self.chat.llm.generate = AsyncMock(side_effect=simuler_groq)
+
+        reponse = await self.chat.repondre(d)
+
+        self.assertIn("Pour Pikine", reponse.reponse)
+        self.assertIn("pas pu confirmer", reponse.reponse)
+        self.assertNotIn("préciser la localité", reponse.reponse)
+
+        self.chat.llm.generate.assert_awaited_once()
+
     async def test_hors_sujet_preserve(self):
         reponse = await self.chat.repondre(conversation('C’est quoi la scalabilité ?'))
         self.assertIn('démarche administrative', reponse.reponse)

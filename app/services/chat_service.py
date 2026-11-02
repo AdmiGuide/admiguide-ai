@@ -287,6 +287,20 @@ class ChatService:
                     return localite
         return None
 
+    @staticmethod
+    def extraire_localite_de_situation(situation: str) -> str | None:
+        """Extrait la localité du terrain depuis la situation initiale."""
+        motif = (
+            r"(?i:\bterrain\s+(?:est\s+)?"
+            r"(?:situé|située|se trouve|se situe)\s+"
+            r"(?:à|au|en)\s+)"
+            r"([A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ'’-]*"
+            r"(?:[ -][A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ'’-]*){0,2})"
+        )
+
+        correspondance = re.search(motif, situation)
+        return correspondance.group(1) if correspondance else None
+
     @classmethod
     def reconnaitre_suivi_localisation(
         cls, demande: ChatRequest,
@@ -861,6 +875,23 @@ class ChatService:
         suivi = self.reconnaitre_suivi_localisation(demande)
         question_recherche = suivi[0] if suivi else demande.question
         localite = suivi[1] if suivi else None
+
+        # Réutilise la localité du terrain déjà mentionnée
+        # si aucune localité n'est donnée dans la question.
+        if not localite and self.necessite_recherche_web(question_recherche):
+            cible = self.cibler_service_web(demande, question_recherche)
+
+            if cible and cible[1] == "BUREAU":
+                lieu_question = re.search(
+                    r"\b(?:à|au|en)\s+"
+                    r"([A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿ-]*)",
+                    question_recherche,
+                )
+
+                if not lieu_question:
+                    localite = self.extraire_localite_de_situation(
+                        demande.situation
+                    )
 
         # Vérifie si la question actuelle OU la question suivie nécessite Internet.
         if self.necessite_recherche_web(question_recherche):
