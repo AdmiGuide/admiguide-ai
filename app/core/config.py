@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     # Modèle génératif utilisé par AdmiGuide.
     llm_model_name: str = "openai/gpt-oss-120b"
 
+    # Modèle dédié au chatbot contextuel.
+    # Il sert à expliquer les informations administratives.
+    chat_llm_model_name: str = "openai/gpt-oss-20b"
+
     # Modèle utilisé pour transcrire les enregistrements vocaux.
     transcription_model_name: str = "whisper-large-v3-turbo"
     

@@ -1,6 +1,6 @@
 import asyncio
 import re
-
+from urllib.parse import urlparse
 # Permet de réutiliser la même instance du service.
 from functools import lru_cache
 
@@ -62,6 +62,9 @@ class LLMService:
         self,
         system_prompt: str,
         user_prompt: str,
+        model_name: str | None = None,
+        utiliser_recherche_web: bool = False,
+        sources_web: list[dict] | None = None,
     ) -> str:
         """
         Envoie une demande à Groq.
@@ -69,9 +72,15 @@ class LLMService:
         En cas d'erreur 429, attend le délai conseillé
         puis effectue une seule nouvelle tentative.
         """
+        # Sélectionne le modèle demandé par le service.
+        # Par défaut, utilise GPT-OSS 120B pour l'orientation.
+        modele_selectionne = (
+            model_name or settings.llm_model_name
+        )
 
+        # Prépare les données à envoyer à Groq.
         payload = {
-            "model": settings.llm_model_name,
+            "model": modele_selectionne,
             "temperature": 0,
             "messages": [
                 {
@@ -84,6 +93,18 @@ class LLMService:
                 },
             ],
         }
+
+        # Active la recherche Internet uniquement
+        # lorsque le service appelant en a besoin.
+        if utiliser_recherche_web:
+            payload["tools"] = [
+                {"type": "browser_search"}
+            ]
+            payload["tool_choice"] = "required"
+            payload["reasoning_effort"] = "low"
+            # Limite la longueur des réponses de recherche
+            # afin de limiter la consommation de tokens.
+            payload["max_completion_tokens"] = 1200
 
         headers = {
             "Authorization": (
@@ -101,12 +122,15 @@ class LLMService:
         max_attempts = 2
 
         try:
+            # La recherche Internet peut prendre plus de temps
+            # qu'une simple génération de texte.
+            delai = 90.0 if utiliser_recherche_web else 20.0
+
             async with httpx.AsyncClient(
-                timeout=20.0,
+                timeout=delai,
             ) as client:
 
                 for attempt in range(max_attempts):
-
                     response = await client.post(
                         url,
                         headers=headers,
@@ -229,6 +253,68 @@ class LLMService:
             raise RuntimeError(
                 "Groq a retourné une réponse vide."
             )
+
+        # Récupère uniquement les liens institutionnels
+        # qui apparaissent aussi dans la réponse du modèle.
+        if utiliser_recherche_web and sources_web is not None:
+
+            liens_vus = set()
+
+            for outil in data["choices"][0]["message"].get(
+                "executed_tools", []
+            ):
+                # Pages consultées et résultats de recherche.
+                pages = list(outil.get("browser_results") or [])
+
+                recherche = outil.get("search_results") or {}
+                pages.extend(recherche.get("results") or [])
+
+                for page in pages:
+                    if not isinstance(page, dict):
+                        continue
+
+                    url = page.get("url", "")
+                    if not isinstance(url, str):
+                        continue
+
+                    adresse = urlparse(url)
+                    domaine = (adresse.hostname or "").lower()
+
+                    # Autorise les domaines institutionnels
+                    # correspondant aux sources d'AdmiGuide.
+                    officiel = (
+                        domaine == "dgid.sn"
+                        or domaine.endswith(".dgid.sn")
+                        or domaine == "senegalservices.sn"
+                        or domaine.endswith(".senegalservices.sn")
+                        or domaine.endswith(".gouv.sn")
+                    )
+
+                    # Un lien trouvé mais non cité ne suffit
+                    # pas pour justifier la réponse.
+                    if (
+                        adresse.scheme != "https"
+                        or not officiel
+                        or url not in contenu
+                        or url in liens_vus
+                    ):
+                        continue
+
+                    liens_vus.add(url)
+
+                    # Conserve la référence et un extrait de son contenu.
+                    # L'extrait servira à contrôler les informations
+                    # avant de les présenter à l'utilisateur.
+                    sources_web.append({
+                        "titre": (
+                            page.get("title")
+                            or "Source institutionnelle"
+                        ),
+                        "url": url,
+                        "extrait": str(
+                            page.get("content") or ""
+                        )[:1500],
+                    })
 
         return contenu.strip()
 

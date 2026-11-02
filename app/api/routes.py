@@ -1,6 +1,12 @@
 from pathlib import Path
 import tempfile
 
+# Schémas des questions et réponses du chatbot.
+from app.schemas.chat import ChatRequest, ChatResponse
+
+# Service chargé de répondre aux questions contextuelles.
+from app.services.chat_service import ChatService
+
 # Outils FastAPI pour créer les routes,
 # recevoir les fichiers et gérer les erreurs HTTP.
 from fastapi import (
@@ -245,5 +251,55 @@ async def analyze(
             detail=(
                 "Le service d'analyse a retourné "
                 "une réponse invalide."
+            ),
+        ) from exc
+
+
+
+# ==========================================================
+# CHATBOT CONTEXTUEL
+# ==========================================================
+
+@router.post(
+    "/chat",
+    response_model=ChatResponse,
+)
+async def chat(
+    request: ChatRequest,
+):
+    """
+    Répond aux questions liées à une orientation existante.
+
+    Le chatbot explique les informations administratives
+    et peut rechercher des renseignements complémentaires.
+    Il ne réalise pas de nouvelle orientation.
+    """
+
+    # Initialise le service du chatbot.
+    chatbot_service = ChatService()
+
+    try:
+        # Génère une réponse adaptée à la question.
+        return await chatbot_service.repondre(
+            demande=request,
+        )
+
+    except RuntimeError as exc:
+        # Gère notamment les indisponibilités de Groq.
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Le chatbot est temporairement "
+                "indisponible. Veuillez réessayer."
+            ),
+        ) from exc
+
+    except ValueError as exc:
+        # Gère une erreur de traitement du service.
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "Le chatbot n'a pas pu traiter "
+                "la réponse correctement."
             ),
         ) from exc
