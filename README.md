@@ -4,8 +4,8 @@
 
 ## Fonctionnalités
 
-- **Orientation administrative** : analyse une situation en français, recherche des informations dans un référentiel officiel via **RAG**, demande des précisions si nécessaire et identifie une démarche parmi celles autorisées par Django.
-- **Chatbot contextuel** : explique les termes, pièces et étapes d'une orientation existante sur les pages *Quelques précisions*, *Votre orientation* et *Suivi de ma démarche*. Il conserve un historique récent, peut rechercher des renseignements pratiques sur des sites institutionnels et ne modifie pas l'orientation.
+- **Orientation administrative** : analyse une situation exprimée en français, recherche des informations dans un référentiel documentaire via **RAG**, demande des précisions si nécessaire et identifie une démarche parmi celles autorisées par Django. L'utilisateur n'a pas besoin de connaître à l'avance le nom exact de sa démarche.
+- **Chatbot contextuel** : explique les termes, pièces et étapes d'une orientation existante sur les pages *Quelques précisions*, *Votre orientation* et *Suivi de ma démarche*. Il tient compte des échanges récents, peut reformuler une explication et rechercher des renseignements pratiques dans des sources institutionnelles. Il n'effectue pas les démarches et ne modifie pas l'orientation.
 - **Transcription vocale** : transforme en texte les situations dictées, après préparation de l'audio avec FFmpeg.
 
 Le MVP couvre trois domaines : **passeport sénégalais, pensions après décès et foncier**. AdmiGuide fournit une aide à l'orientation, **pas une décision administrative ni un service de dépôt de dossier**.
@@ -36,7 +36,9 @@ FastAPI — AdmiGuide AI
   `-- /transcribe -> FFmpeg + Whisper -> texte
 ```
 
-Les documents RAG sont indexés localement dans ChromaDB. **La recherche web du chatbot est distincte du RAG d'orientation** : elle sert à vérifier certaines informations pratiques, notamment la localisation ou les coordonnées d'un service administratif.
+Les documents RAG sont indexés localement dans ChromaDB. **La recherche web du chatbot est distincte du RAG d'orientation** : elle permet notamment de rechercher la localisation ou les coordonnées d'un service administratif.
+
+Lorsque la recherche Groq fournit un extrait d'une page institutionnelle, le chatbot peut en extraire une adresse en vérifiant son association avec le service demandé. Cette extraction peut fonctionner même lorsqu'une lecture HTTP directe échoue. Si aucune information suffisamment étayée n'est disponible, le chatbot signale l'incertitude et peut proposer la source officielle à consulter. La vérification des certificats HTTPS n'est pas désactivée.
 
 ## Installation en local
 
@@ -120,17 +122,28 @@ Les schémas d'entrée et de sortie sont décrits dans **`/docs`** et dans `app/
 
 ## Tests
 
+Après le nettoyage des scripts temporaires, les vérifications conservées sont :
+
+| Script | Objectif |
+| --- | --- |
+| `scripts/test_sources_officielles.py` | Vérifier les règles de sécurité relatives aux sources institutionnelles |
+| `scripts/test_mvp_full_flow.py` | Tester les parcours d'orientation des trois domaines du MVP |
+
 Depuis la racine du dépôt, avec l'environnement virtuel activé :
 
 ```bash
-# Tests hors ligne du chatbot (19 tests)
-python -m unittest discover -s scripts -p "test_chat_*.py" -v
-
-# Vérification des sources institutionnelles (5 tests)
+# Tests unitaires hors ligne des sources officielles
 python -m unittest discover -s scripts -p "test_sources_officielles.py" -v
+
+# Tests du parcours complet d'orientation (nécessite Groq)
+python -m scripts.test_mvp_full_flow
 ```
 
-**24 tests automatisés validés** lors de la dernière vérification. Ils couvrent notamment les règles du chatbot, la continuité de conversation, la réutilisation de la localité depuis la situation initiale, la distinction entre siège et bureau territorial, ainsi que le filtrage des sources. Ces tests hors ligne ne remplacent pas les essais de bout en bout avec Groq, Django et Angular.
+Le script `scripts/ingest_sources.py` sert à **indexer les documents RAG** ; il ne s'agit pas d'un test.
+
+Le chatbot contextuel a également été vérifié pendant le développement à l'aide de tests de régression et d'essais dans l'interface. Les scripts de diagnostic temporaires ont été retirés du projet. Leur suppression n'empêche pas le chatbot de fonctionner, mais réduit la couverture des futures vérifications automatiques.
+
+Les essais de bout en bout dépendent de la configuration des services, de la disponibilité des sources et des quotas Groq.
 
 ## Docker
 
@@ -143,7 +156,9 @@ Le conteneur expose le port **8001**. Pour utiliser le RAG dans Docker, **indexe
 
 ## Fiabilité et limites
 
-Le chatbot explique une démarche existante, sans inventer d'étapes, de pièces, d'adresses, de coûts ou de délais. Pour les renseignements pratiques, il privilégie les sources institutionnelles vérifiables et peut signaler qu'une information n'a pas pu être confirmée. Les réponses dépendent du référentiel, des sources disponibles et des quotas Groq.
+Le chatbot est conçu pour expliquer une orientation existante sans créer de nouvelles étapes ni présenter comme certains des adresses, coûts ou délais non étayés. Il privilégie les sources institutionnelles et peut renvoyer vers une fiche officielle lorsque l'information ne peut pas être confirmée. Les résultats demeurent tributaires du référentiel, de la qualité des extraits de recherche, de l'accessibilité des sites et des quotas Groq.
+
+L'outil ne remplace pas la vérification auprès de l'administration compétente.
 
 ## Dépôts associés
 
